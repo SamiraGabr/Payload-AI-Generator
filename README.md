@@ -9,7 +9,13 @@ The project consists of two main components:
   * A **C-based front-end** that handles user interaction, collects parameters like platform, AI model, payload type, language, and obfuscation level, and then constructs a command to execute the Python backend.
   * A **Python-based backend (`ai_helper.py`)** that communicates with the selected AI model (Gemini or OpenAI's GPT-4) to generate the requested payloads or vulnerability walkthroughs, and then saves the output to a file.
 
+---
+## Demo
+---
+
+
 ## Features
+---
 
   * **Platform Selection**: Generate payloads for Windows, Linux, macOS, or Web Applications.
   * **AI Model Choice**: Utilize either **Google's Gemini** or **OpenAI's GPT-4** for content generation.
@@ -19,9 +25,9 @@ The project consists of two main components:
   * **Obfuscation**: Request payloads with varying levels of obfuscation (None, Basic, Advanced) and WAF bypass techniques.
   * **Output Management**: Automatically saves generated content to a timestamped file within `OutPuts/OS` or `OutPuts/Web` directories, with an option for custom filenames.
   * **User-Friendly Interface**: Simple menu-driven interaction for selecting options.
-  * 
-## Project Structure
 
+
+## Project Structure
 ```
 .
 ├── payloads-gen.c      # C source code for the command-line interface
@@ -38,6 +44,8 @@ The project consists of two main components:
 
 
 ## Getting Started
+---
+
 
 ### Prerequisites
 
@@ -73,6 +81,8 @@ The project consists of two main components:
     
 
 ### Installation
+---
+
 
 1.  **Clone the repository:**
     ```bash
@@ -128,6 +138,8 @@ It's highly recommended to use a virtual environment (`venv`) for Python project
     ```
 
 ## Usage
+---
+
 
 1.  **Run the compiled C executable:**
 
