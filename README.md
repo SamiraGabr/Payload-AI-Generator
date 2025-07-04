@@ -12,7 +12,7 @@ The project consists of two main components:
 
 ## Demo
 ---
-
+https://github.com/user-attachments/assets/062f491d-868a-439d-9e9c-10013dc85794
 
 ## Features
 ---
