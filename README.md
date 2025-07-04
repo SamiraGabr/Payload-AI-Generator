@@ -1,6 +1,7 @@
 # `AI-Assisted Payload Generator and Walkthrough`
 
 ## Overview
+---
 
 This project provides a command-line interface (CLI) tool that leverages AI models (Gemini or GPT-4) to generate various penetration testing payloads and walkthroughs. It's designed to assist security professionals and red team operators in quickly obtaining relevant and obfuscated payloads for different platforms and vulnerabilities.
 
@@ -9,7 +10,6 @@ The project consists of two main components:
   * A **C-based front-end** that handles user interaction, collects parameters like platform, AI model, payload type, language, and obfuscation level, and then constructs a command to execute the Python backend.
   * A **Python-based backend (`ai_helper.py`)** that communicates with the selected AI model (Gemini or OpenAI's GPT-4) to generate the requested payloads or vulnerability walkthroughs, and then saves the output to a file.
 
----
 ## Demo
 ---
 
