@@ -1,0 +1,184 @@
+```c
+// Raw Payload Code (port_scanner.c)
+#include <stdio.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib") // Link with winsock
+
+int main(int argc, char *argv[]) {
+    WSADATA wsaData;
+    SOCKET sock;
+    struct sockaddr_in target;
+    int port;
+    char *ip_address;
+
+    if (argc != 3) {
+        fprintf(stderr, "Usage: %s <ip_address> <start_port>\n", argv[0]);
+        return 1;
+    }
+
+    ip_address = argv[1];
+    int start_port = atoi(argv[2]);  // Starting port from command line.  For simplicity, we scan a small range.
+    int end_port = start_port + 10; // Scan a range of 10 ports
+
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        fprintf(stderr, "WSAStartup failed.\n");
+        return 1;
+    }
+
+    for (port = start_port; port <= end_port; port++) {
+        sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        if (sock == INVALID_SOCKET) {
+            fprintf(stderr, "Socket creation failed.\n");
+            WSACleanup();
+            return 1;
+        }
+
+        target.sin_family = AF_INET;
+        target.sin_port = htons(port);
+        inet_pton(AF_INET, ip_address, &target.sin_addr.s_addr);
+
+        if (connect(sock, (struct sockaddr *)&target, sizeof(target)) == 0) {
+            printf("Port %d is open\n", port);
+            closesocket(sock); // Close socket if open
+        } else {
+            closesocket(sock); // Close socket even if connection fails
+        }
+    }
+
+    WSACleanup();
+    return 0;
+}
+
+
+// Obfuscated Payload Code (obfuscated_port_scanner.c)
+#include <stdio.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#pragma comment(lib, "ws2_32.lib") // Link with winsock
+
+#define F00(x) x //No-op macro
+#define VAR_NAME(x) v##x //Simple Macro for changing variable names
+#define STR_ENC(x) x   //Identity for now, but can expand.
+
+int main(int VAR_NAME(argc), char *VAR_NAME(argv)[]) {
+    WSADATA VAR_NAME(wsaData);
+    SOCKET VAR_NAME(sock);
+    struct sockaddr_in VAR_NAME(target);
+    int VAR_NAME(port);
+    char *VAR_NAME(ip_address);
+
+    if (VAR_NAME(argc) != 3) {
+        fprintf(stderr, STR_ENC("Usage: %s <ip_address> <start_port>\n"), VAR_NAME(argv)[0]); //String "encryption"
+        return 1;
+    }
+
+    VAR_NAME(ip_address) = VAR_NAME(argv)[1];
+    int VAR_NAME(start_port) = atoi(VAR_NAME(argv)[2]); // Starting port from command line. For simplicity, we scan a small range.
+    int VAR_NAME(end_port) = VAR_NAME(start_port) + 10; // Scan a range of 10 ports.
+
+    if (WSAStartup(MAKEWORD(2, 2), &VAR_NAME(wsaData)) != 0) {
+        fprintf(stderr, STR_ENC("WSAStartup failed.\n"));
+        return 1;
+    }
+
+    for (VAR_NAME(port) = VAR_NAME(start_port); VAR_NAME(port) <= VAR_NAME(end_port); VAR_NAME(port)++) {
+        VAR_NAME(sock) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        if (VAR_NAME(sock) == INVALID_SOCKET) {
+            fprintf(stderr, STR_ENC("Socket creation failed.\n"));
+            WSACleanup();
+            return 1;
+        }
+
+        VAR_NAME(target).sin_family = AF_INET;
+        VAR_NAME(target).sin_port = htons(VAR_NAME(port));
+        inet_pton(AF_INET, VAR_NAME(ip_address), &VAR_NAME(target).sin_addr.s_addr);
+
+        if (connect(VAR_NAME(sock), (struct sockaddr *)&VAR_NAME(target), sizeof(VAR_NAME(target))) == 0) {
+            printf(STR_ENC("Port %d is open\n"), VAR_NAME(port));
+            closesocket(VAR_NAME(sock)); // Close socket if open
+        } else {
+            closesocket(VAR_NAME(sock)); // Close socket even if connection fails
+        }
+    }
+
+    WSACleanup();
+    return 0;
+}
+```
+
+```c
+//Obfuscated and commented Payload Code (obfuscated_port_scanner_commented.c)
+#include <stdio.h>          // Standard input/output library
+#include <winsock2.h>       // Windows Sockets 2 API
+#include <ws2tcpip.h>       // Winsock TCP/IP functions
+#pragma comment(lib, "ws2_32.lib") // Link with winsock library
+
+// Define a macro that does nothing (no-op) - for potential later use in more advanced obfuscation
+#define F00(x) x
+
+// Define a macro for changing variable names - adds a 'v' prefix
+#define VAR_NAME(x) v##x
+
+// Define a macro for string "encryption" - currently just the identity, but can be expanded later
+#define STR_ENC(x) x
+
+int main(int VAR_NAME(argc), char *VAR_NAME(argv)[]) {
+    WSADATA VAR_NAME(wsaData); // WSADATA struct to store startup information
+    SOCKET VAR_NAME(sock);     // Socket descriptor
+    struct sockaddr_in VAR_NAME(target); // Socket address structure
+    int VAR_NAME(port);     // Port number to scan
+    char *VAR_NAME(ip_address); // IP address to scan
+
+    // Check if the correct number of arguments are provided
+    if (VAR_NAME(argc) != 3) {
+        // Print usage instructions to stderr. STR_ENC macro allows later obfuscation.
+        fprintf(stderr, STR_ENC("Usage: %s <ip_address> <start_port>\n"), VAR_NAME(argv)[0]);
+        return 1;  // Exit with an error code
+    }
+
+    VAR_NAME(ip_address) = VAR_NAME(argv)[1]; // Get the IP address from the command line arguments
+    int VAR_NAME(start_port) = atoi(VAR_NAME(argv)[2]); // Starting port from command line. For simplicity, we scan a small range.
+    int VAR_NAME(end_port) = VAR_NAME(start_port) + 10; // Scan a range of 10 ports.
+
+    // Initialize Winsock
+    if (WSAStartup(MAKEWORD(2, 2), &VAR_NAME(wsaData)) != 0) {
+        // Print an error message to stderr if WSAStartup fails
+        fprintf(stderr, STR_ENC("WSAStartup failed.\n"));
+        return 1;  // Exit with an error code
+    }
+
+    // Loop through the port range
+    for (VAR_NAME(port) = VAR_NAME(start_port); VAR_NAME(port) <= VAR_NAME(end_port); VAR_NAME(port)++) {
+        // Create a socket
+        VAR_NAME(sock) = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+        if (VAR_NAME(sock) == INVALID_SOCKET) {
+            // Print an error message to stderr if socket creation fails
+            fprintf(stderr, STR_ENC("Socket creation failed.\n"));
+            WSACleanup(); // Clean up Winsock
+            return 1;      // Exit with an error code
+        }
+
+        // Configure the target address structure
+        VAR_NAME(target).sin_family = AF_INET;                     // IPv4 address family
+        VAR_NAME(target).sin_port = htons(VAR_NAME(port));       // Port number (converted to network byte order)
+        inet_pton(AF_INET, VAR_NAME(ip_address), &VAR_NAME(target).sin_addr.s_addr); // Convert IP address to binary format
+
+        // Attempt to connect to the target
+        if (connect(VAR_NAME(sock), (struct sockaddr *)&VAR_NAME(target), sizeof(VAR_NAME(target))) == 0) {
+            // If the connection is successful, print a message to stdout
+            printf(STR_ENC("Port %d is open\n"), VAR_NAME(port));
+            closesocket(VAR_NAME(sock)); // Close socket if open
+        } else {
+            // If the connection fails, close the socket
+            closesocket(VAR_NAME(sock)); // Close socket even if connection fails
+        }
+    }
+
+    // Clean up Winsock
+    WSACleanup();
+    return 0; // Exit successfully
+}
+```
+
+This payload performs a simple TCP port scan on a specified IP address and a small range of ports.  The obfuscation employs macro definitions to rename variables and wrap strings, offering a rudimentary level of disguise that could evade basic signature-based detection mechanisms.  Further obfuscation techniques can be applied, like string encoding and control flow flattening.

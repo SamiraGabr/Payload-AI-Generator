@@ -1,0 +1,105 @@
+## Original Payloads:
+
+1.  `ls -la`
+2.  `whoami`
+3.  `pwd`
+4.  `id`
+5.  `uname -a`
+6.  `cat /etc/passwd`
+7.  `cat /etc/shadow`
+8.  `cat /etc/hosts`
+9.  `ifconfig`
+10. `ip addr`
+11. `netstat -an`
+12. `ps aux`
+13. `w`
+14. `last`
+15. `env`
+16. `set`
+17. `echo Hello`
+18. `touch test.txt`
+19. `rm test.txt`
+20. `mkdir test_dir`
+21. `rmdir test_dir`
+22. `wget example.com`
+23. `curl example.com`
+24. `ping -c 1 example.com`
+25. `sleep 5`
+26. `find / -name "important_file"`
+27. `grep "password" /path/to/file`
+28. `head /etc/passwd`
+29. `tail /etc/passwd`
+30. `sort /etc/passwd`
+31. `uniq /etc/passwd`
+32. `wc -l /etc/passwd`
+33. `date`
+34. `uptime`
+35. `df -h`
+36. `du -sh`
+37. `top -n 1`
+38. `free -m`
+39. `lsof`
+40. `nc -v example.com 80`
+41. `python -c 'print("Hello")'`
+42. `perl -e 'print "Hello\n"'`
+43. `php -r 'echo "Hello\n";'`
+44. `ruby -e 'puts "Hello"'`
+45. `java -version`
+46. `javac -version`
+47. `awk '{print $1}' /etc/passwd`
+48. `sed 's/root/admin/' /etc/passwd`
+49. `tr 'a-z' 'A-Z' < /etc/passwd`
+50. `printf "Hello\n"`
+
+## Obfuscated Payloads:
+
+1.  `l\s\ -\l\a` (Whitespace insertion)
+2.  `wh\oa\mi` (Whitespace insertion)
+3.  `p\wd` (Whitespace insertion)
+4.  `i\d` (Whitespace insertion)
+5.  `una\me\ -a` (Whitespace insertion)
+6.  `c\at\ /\e\tc/\pass\wd` (Whitespace insertion)
+7.  `c\at\ /\e\tc/\shado\w` (Whitespace insertion)
+8.  `ca\t\ /\et\c/\hos\ts` (Whitespace insertion)
+9.  `ifcon\fig` (Whitespace insertion)
+10. `i\p\ ad\dr` (Whitespace insertion)
+11. `nets\tat\ -an` (Whitespace insertion)
+12. `p\s\ au\x` (Whitespace insertion)
+13. `w`
+14. `la\st` (Whitespace insertion)
+15. `en\v` (Whitespace insertion)
+16. `s\et` (Whitespace insertion)
+17. `ech\o\ Hel\lo` (Whitespace insertion)
+18. `tou\ch\ te\st.t\xt` (Whitespace insertion)
+19. `r\m\ tes\t.t\xt` (Whitespace insertion)
+20. `m\kd\ir\ te\st_d\ir` (Whitespace insertion)
+21. `rmd\ir\ tes\t_d\ir` (Whitespace insertion)
+22. `wge\t\ exa\mpl\e.c\om` (Whitespace insertion)
+23. `cu\rl\ examp\le.co\m` (Whitespace insertion)
+24. `pin\g\ -c\ 1\ examp\le.co\m` (Whitespace insertion)
+25. `slee\p\ 5` (Whitespace insertion)
+26. `fin\d\ /\ -\nam\e\ "imp\ort\ant\_\fil\e"` (Whitespace insertion)
+27. `gre\p\ "pass\wor\d"\ /\pat\h/\to/\fil\e` (Whitespace insertion)
+28. `hea\d\ /\et\c/\pass\wd` (Whitespace insertion)
+29. `tai\l\ /\et\c/\pass\wd` (Whitespace insertion)
+30. `sor\t\ /\et\c/\pass\wd` (Whitespace insertion)
+31. `un\iq\ /\et\c/\pass\wd` (Whitespace insertion)
+32. `w\c\ -\l\ /\et\c/\pass\wd` (Whitespace insertion)
+33. `d\ate` (Whitespace insertion)
+34. `upt\ime` (Whitespace insertion)
+35. `d\f\ -h` (Whitespace insertion)
+36. `d\u\ -s\h` (Whitespace insertion)
+37. `to\p\ -n\ 1` (Whitespace insertion)
+38. `fre\e\ -m` (Whitespace insertion)
+39. `lso\f` (Whitespace insertion)
+40. `n\c\ -v\ exampl\e.co\m\ 8\0` (Whitespace insertion)
+41. `pyt\hon\ -c\ 'prin\t("Hell\o")'` (Whitespace insertion)
+42. `per\l\ -e\ 'pr\int\ "Hell\o\\n"'` (Whitespace insertion)
+43. `ph\p\ -r\ 'ec\ho\ "Hell\o\\n";'` (Whitespace insertion)
+44. `rub\y\ -e\ 'pu\ts\ "Hell\o"'` (Whitespace insertion)
+45. `jav\a\ -ver\sion` (Whitespace insertion)
+46. `java\c\ -ver\sion` (Whitespace insertion)
+47. `aw\k\ '{pr\int\ $1}'\ /\et\c/\pass\wd` (Whitespace insertion)
+48. `se\d\ 's/roo\t/adm\in/'\ /\et\c/\pass\wd` (Whitespace insertion)
+49. `t\r\ 'a-z'\ 'A-Z'\ <\ /\et\c/\pass\wd` (Whitespace insertion)
+50. `prin\tf\ "Hell\o\\n"` (Whitespace insertion)

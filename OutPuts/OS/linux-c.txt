@@ -1,0 +1,288 @@
+Okay, let's craft a C payload designed to detect common virtualization environments on Linux, and then obfuscate it.  This focuses on techniques often used in red teaming for initial reconnaissance.
+
+**1. Raw Payload Code (anti_vm.c):**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <dirent.h>
+
+// Function to check for specific files/directories
+int check_file_exists(const char *path) {
+  struct stat buffer;
+  return (stat(path, &buffer) == 0);
+}
+
+// Function to check for specific processes
+int check_process_running(const char *process_name) {
+    DIR *dir;
+    struct dirent *ent;
+    char cmdline_path[256];
+    char cmdline[256];
+    FILE *fp;
+
+    if ((dir = opendir("/proc")) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            if (isdigit(ent->d_name[0])) {
+                snprintf(cmdline_path, sizeof(cmdline_path), "/proc/%s/cmdline", ent->d_name);
+                fp = fopen(cmdline_path, "r");
+                if (fp != NULL) {
+                    if (fgets(cmdline, sizeof(cmdline), fp) != NULL) {
+                        if (strstr(cmdline, process_name) != NULL) {
+                            fclose(fp);
+                            closedir(dir);
+                            return 1; // Process found
+                        }
+                    }
+                    fclose(fp);
+                }
+            }
+        }
+        closedir(dir);
+    }
+    return 0; // Process not found
+}
+
+int main() {
+  int vm_detected = 0;
+
+  // Check for VirtualBox artifacts
+  if (check_file_exists("/dev/vboxguest") || check_file_exists("/dev/vboxuser") || check_file_exists("/opt/VBoxGuestAdditions")) {
+    printf("[!] VirtualBox detected.\n");
+    vm_detected = 1;
+  }
+    if (check_process_running("VBoxService") || check_process_running("VBoxClient")) {
+        printf("[!] VirtualBox process detected.\n");
+        vm_detected = 1;
+    }
+
+
+  // Check for VMware artifacts
+  if (check_file_exists("/dev/vmci") || check_file_exists("/dev/vsock")) {
+    printf("[!] VMware detected.\n");
+    vm_detected = 1;
+  }
+  if (check_process_running("vmtoolsd") || check_process_running("vmware-toolbox-cmd")) {
+      printf("[!] VMware process detected.\n");
+      vm_detected = 1;
+  }
+
+    // Check for QEMU artifacts
+    if (check_file_exists("/dev/virtio-ports/org.qemu.guest.agent.0")) {
+        printf("[!] QEMU detected.\n");
+        vm_detected = 1;
+    }
+    if (check_process_running("qemu-ga")) {
+        printf("[!] QEMU process detected.\n");
+        vm_detected = 1;
+    }
+
+
+  if (vm_detected) {
+    printf("[!] Possible Virtual Machine environment detected.\n");
+    return 1; // Indicate VM detected
+  } else {
+    printf("[+] No common VM artifacts detected.\n");
+    return 0; // Indicate no VM detected
+  }
+}
+```
+
+**2. Obfuscated Version (anti_vm_obfuscated.c):**
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <dirent.h>
+// Function to check for specific files/directories
+int a(const char *b) {
+  struct stat c;
+  return (stat(b, &c) == 0);
+}
+
+// Function to check for specific processes
+int d(const char *e) {
+    DIR *f;
+    struct dirent *g;
+    char h[256];
+    char i[256];
+    FILE *j;
+
+    if ((f = opendir("/proc")) != NULL) {
+        while ((g = readdir(f)) != NULL) {
+            if (isdigit(g->d_name[0])) {
+                snprintf(h, sizeof(h), "/proc/%s/cmdline", g->d_name);
+                j = fopen(h, "r");
+                if (j != NULL) {
+                    if (fgets(i, sizeof(i), j) != NULL) {
+                        if (strstr(i, e) != NULL) {
+                            fclose(j);
+                            closedir(f);
+                            return 1; // Process found
+                        }
+                    }
+                    fclose(j);
+                }
+            }
+        }
+        closedir(f);
+    }
+    return 0; // Process not found
+}
+
+int main() {
+  int k = 0;
+
+  // Check for VirtualBox artifacts
+  if (a("/dev/vboxguest") || a("/dev/vboxuser") || a("/opt/VBoxGuestAdditions")) {
+    printf("[!] VirtualBox detected.\n");
+    k = 1;
+  }
+    if (d("VBoxService") || d("VBoxClient")) {
+        printf("[!] VirtualBox process detected.\n");
+        k = 1;
+    }
+
+  // Check for VMware artifacts
+  if (a("/dev/vmci") || a("/dev/vsock")) {
+    printf("[!] VMware detected.\n");
+    k = 1;
+  }
+    if (d("vmtoolsd") || d("vmware-toolbox-cmd")) {
+        printf("[!] VMware process detected.\n");
+        k = 1;
+    }
+
+    // Check for QEMU artifacts
+    if (a("/dev/virtio-ports/org.qemu.guest.agent.0")) {
+        printf("[!] QEMU detected.\n");
+        k = 1;
+    }
+    if (d("qemu-ga")) {
+        printf("[!] QEMU process detected.\n");
+        k = 1;
+    }
+
+  if (k) {
+    printf("[!] Possible Virtual Machine environment detected.\n");
+    return 1; // Indicate VM detected
+  } else {
+    printf("[+] No common VM artifacts detected.\n");
+    return 0; // Indicate no VM detected
+  }
+}
+```
+
+**3. Code with Inline Comments (anti_vm_commented.c):**
+
+```c
+#include <stdio.h>          // Standard input/output library
+#include <stdlib.h>         // Standard library (e.g., exit)
+#include <string.h>         // String manipulation functions
+#include <unistd.h>         // POSIX operating system API (e.g., usleep)
+#include <sys/types.h>      // Data types (e.g., pid_t)
+#include <sys/stat.h>       // File status (e.g., stat)
+#include <fcntl.h>          // File control options
+#include <dirent.h>         // Directory operations
+
+// Function to check if a file or directory exists
+int check_file_exists(const char *path) {
+  struct stat buffer;  // Structure to hold file status information
+  return (stat(path, &buffer) == 0);  // stat returns 0 on success (file exists)
+}
+
+// Function to check if a specific process is running by searching /proc
+int check_process_running(const char *process_name) {
+    DIR *dir;                // Directory stream
+    struct dirent *ent;       // Directory entry
+    char cmdline_path[256]; // Path to the cmdline file in /proc
+    char cmdline[256];      // Buffer to store the command line
+    FILE *fp;               // File pointer
+
+    // Open the /proc directory
+    if ((dir = opendir("/proc")) != NULL) {
+        // Read directory entries
+        while ((ent = readdir(dir)) != NULL) {
+            // Check if the directory entry name is a number (PID)
+            if (isdigit(ent->d_name[0])) {
+                // Construct the path to the cmdline file for the process
+                snprintf(cmdline_path, sizeof(cmdline_path), "/proc/%s/cmdline", ent->d_name);
+                // Open the cmdline file
+                fp = fopen(cmdline_path, "r");
+                if (fp != NULL) {
+                    // Read the command line
+                    if (fgets(cmdline, sizeof(cmdline), fp) != NULL) {
+                        // Check if the process name is in the command line
+                        if (strstr(cmdline, process_name) != NULL) {
+                            fclose(fp);      // Close the file
+                            closedir(dir);   // Close the directory
+                            return 1;       // Process found
+                        }
+                    }
+                    fclose(fp);  // Close the file
+                }
+            }
+        }
+        closedir(dir);  // Close the directory
+    }
+    return 0;  // Process not found
+}
+
+int main() {
+  int vm_detected = 0;  // Flag to indicate if a VM is detected
+
+  // Check for VirtualBox artifacts
+  if (check_file_exists("/dev/vboxguest") || check_file_exists("/dev/vboxuser") || check_file_exists("/opt/VBoxGuestAdditions")) {
+    printf("[!] VirtualBox detected.\n");
+    vm_detected = 1;  // Set flag to indicate VM detection
+  }
+    if (check_process_running("VBoxService") || check_process_running("VBoxClient")) {
+        printf("[!] VirtualBox process detected.\n");
+        vm_detected = 1;
+    }
+
+  // Check for VMware artifacts
+  if (check_file_exists("/dev/vmci") || check_file_exists("/dev/vsock")) {
+    printf("[!] VMware detected.\n");
+    vm_detected = 1;  // Set flag to indicate VM detection
+  }
+    if (check_process_running("vmtoolsd") || check_process_running("vmware-toolbox-cmd")) {
+        printf("[!] VMware process detected.\n");
+        vm_detected = 1;
+    }
+
+    // Check for QEMU artifacts
+    if (check_file_exists("/dev/virtio-ports/org.qemu.guest.agent.0")) {
+        printf("[!] QEMU detected.\n");
+        vm_detected = 1;
+    }
+    if (check_process_running("qemu-ga")) {
+        printf("[!] QEMU process detected.\n");
+        vm_detected = 1;
+    }
+
+
+  // Report the findings
+  if (vm_detected) {
+    printf("[!] Possible Virtual Machine environment detected.\n");
+    return 1;  // Indicate VM detected
+  } else {
+    printf("[+] No common VM artifacts detected.\n");
+    return 0;  // Indicate no VM detected
+  }
+}
+```
+
+**Summary:**
+
+The C payload checks for the presence of specific files, directories, and processes commonly associated with VirtualBox, VMware, and QEMU virtualization environments on Linux.  The obfuscated version uses simple renaming of variables and functions to slightly obscure the code's intent, making it a little harder to immediately understand. This focuses on initial reconnaissance capabilities.
