@@ -28,6 +28,8 @@ The project consists of two main components:
 
 
 ## Project Structure
+---
+
 ```
 .
 ├── payloads-gen.c      # C source code for the command-line interface
