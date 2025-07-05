@@ -27,24 +27,6 @@ https://github.com/user-attachments/assets/062f491d-868a-439d-9e9c-10013dc85794
   * **User-Friendly Interface**: Simple menu-driven interaction for selecting options.
 
 
-## Project Structure
----
-
-```
-.
-├── payloads-gen.c      # C source code for the command-line interface
-├── ai_helper.py        # Python backend for AI interaction and payload generation
-├── config.json         # Configuration file for API keys (create this manually)
-├── requirements.txt    # Python dependencies
-├── OutPuts/            # Directory for all generated outputs
-│   ├── OS/             # Outputs for OS-specific payloads
-│   └── Web/            # Outputs for Web Application vulnerabilities
-├── venv/               # Python virtual environment (should be ignored by Git)
-├── .gitignore          # Recommended: include 'venv/' and 'OutPuts/' here
-└── README.md           # This file
-```
-
-
 ## Getting Started
 ---
 
