@@ -75,10 +75,10 @@ https://github.com/user-attachments/assets/062f491d-868a-439d-9e9c-10013dc85794
       "OpenAI_api_key": "YOUR_OPENAI_API_KEY"
     }
     ```
-    https://platform.openai.com/
-    ![Screenshot1](https://github.com/user-attachments/assets/8bd87280-29c5-4288-9c66-fae331546967)
-
     https://ai.google.dev/gemini-api/
+    ![Screenshot1](https://github.com/user-attachments/assets/8bd87280-29c5-4288-9c66-fae331546967)
+    
+    https://platform.openai.com/
     ![Screenshot2](https://github.com/user-attachments/assets/fe288733-ddb2-46ce-bc97-36d0e89f215f)
     
 
