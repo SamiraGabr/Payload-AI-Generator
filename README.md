@@ -10,6 +10,13 @@ The project consists of two main components:
   * A **C-based front-end** that handles user interaction, collects parameters like platform, AI model, payload type, language, and obfuscation level, and then constructs a command to execute the Python backend.
   * A **Python-based backend (`ai_helper.py`)** that communicates with the selected AI model (Gemini or OpenAI's GPT-4) to generate the requested payloads or vulnerability walkthroughs, and then saves the output to a file.
 
+---
+## 🛠️ Technologies Used
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
+![Gemini](https://img.shields.io/badge/Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)
+
 ## Demo
 ---
 https://github.com/user-attachments/assets/062f491d-868a-439d-9e9c-10013dc85794
